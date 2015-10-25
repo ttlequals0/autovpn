@@ -178,4 +178,4 @@ comp-lzo
 verb 3" > /etc/openvpn/client-common.txt
 	# Generates the custom client.ovpn
 	newclient "$CLIENT"
-
+exit
