@@ -178,8 +178,4 @@ comp-lzo
 verb 3" > /etc/openvpn/client-common.txt
 	# Generates the custom client.ovpn
 	newclient "$CLIENT"
-	echo ""
-	echo "Finished!"
-	echo ""
-	echo "Client config is available at ~/$CLIENT.ovpn"
-	echo "If you want to add more clients, simply re-run this script again"
+
