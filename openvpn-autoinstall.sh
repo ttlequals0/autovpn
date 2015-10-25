@@ -52,7 +52,10 @@ newclient () {
 
 
 # Get external IP assumed behind NAT
-IP=$(wget -qO- ipv4.icanhazip.com)
+IP=$(ip addr | grep 'inet' | grep -v inet6 | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)
+if [[ "$IP" = "" ]]; then
+		IP=$(wget -qO- ipv4.icanhazip.com)
+fi
 PORT=1194
 CLIENT=client1
 
@@ -160,7 +163,7 @@ crl-verify /etc/openvpn/easy-rsa/pki/crl.pem" >> /etc/openvpn/server.conf
 			chkconfig openvpn on
 		fi
 	fi
-
+IP=$(wget -qO- ipv4.icanhazip.com)
 	# client-common.txt is created so we have a template to add further users later
 	echo "client
 dev tun
