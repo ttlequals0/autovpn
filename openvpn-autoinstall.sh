@@ -57,7 +57,7 @@ if [[ "$IP" = "" ]]; then
 		IP=$(wget -qO- ipv4.icanhazip.com)
 fi
 PORT=1194
-CLIENT=client1
+CLIENT=aws_vpn
 
 	if [[ "$OS" = 'debian' ]]; then
 		apt-get update
