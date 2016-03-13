@@ -14,14 +14,14 @@ bail ()
 	exit ${1:="1"}
 }
 
-echo "Creating ec2 instance. This will take a few minutes..."
+echo "Creating ec2 instance. This can take some time..."
 instance_ip=$(python create_ec2.py)
 [[ $instance_ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] || bail 2
 echo "Instance has been created $instance_ip"
-echo "Giving new instance some time to fully boot up...."
+echo "Giving new instance some time to fully boot up..."
 while [ "$status" != "0" ] 
 do 
-	echo "$instance_ip is still booting.."
+	echo "$instance_ip is still booting..."
 	sleep 15
 	ssh-keyscan $instance_ip 2>&1 | grep -v "^$" > /dev/null
 	status=$?

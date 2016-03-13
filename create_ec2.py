@@ -51,7 +51,7 @@ def auto_vpn(ami="ami-d05e75b8",
         global host
         host = instance.ip_address
         print "%s" % host
-	return (host)
+	
 
 if __name__ == "__main__":
 	auto_vpn()
