@@ -1,10 +1,13 @@
 import time
 import boto
 import boto.manage.cmdshell
+import sys
+
+keyname=sys.argv[1]
 
 def auto_vpn(ami="ami-d05e75b8",
                     instance_type="t2.micro",
-                    key_name="macbook",
+                    key_name=keyname,
                    	group_name="vpn_2",
                     ssh_port="22",
                     vpn_port="1194",
@@ -53,5 +56,5 @@ def auto_vpn(ami="ami-d05e75b8",
         print "%s" % host
 	
 
-if __name__ == "__main__":
-	auto_vpn()
+if __name__ == "__main__": 
+    auto_vpn()

@@ -6,7 +6,7 @@ get_script="wget http://git.io/vWVpZ --no-check-certificate -O openvpn-autoinsta
 run_script="sudo bash ./openvpn-autoinstall.sh"
 remote_path="\$HOME/aws_vpn.ovpn"
 local_path="$HOME/Downloads"
-
+keyname="$1"
 
 bail ()
 {
@@ -15,7 +15,7 @@ bail ()
 }
 
 echo "Creating ec2 instance. This can take some time..."
-instance_ip=$(python create_ec2.py)
+instance_ip=$(python create_ec2.py "$keyname")
 [[ $instance_ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] || bail 2
 echo "Instance has been created $instance_ip"
 echo "Giving new instance some time to fully boot up..."
