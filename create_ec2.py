@@ -1,6 +1,3 @@
-import os
-import sys
-import subprocess
 import time
 import boto
 import boto.manage.cmdshell
