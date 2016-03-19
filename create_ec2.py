@@ -1,12 +1,20 @@
 import time
 import boto
+import boto.ec2
 import boto.manage.cmdshell
 import sys
 
 keyname=sys.argv[1]
+instance_type=sys.argv[2]
+region=sys.argv[3]
+
+if region:
+    conn_region = boto.ec2.connect_to_region(region)
+else:
+    conn_region = boto.connect_ec2()
 
 def auto_vpn(ami="ami-d05e75b8",
-                    instance_type="t2.micro",
+                    instance_type=instance_type,
                     key_name=keyname,
                    	group_name="vpn_2",
                     ssh_port="22",
@@ -18,7 +26,7 @@ def auto_vpn(ami="ami-d05e75b8",
                     login_user="ec2-user"):
 	
 
-	ec2 = boto.connect_ec2()  
+	ec2 = conn_region 
  
 	try:
     		group = ec2.get_all_security_groups(groupnames=[group_name])[0]
