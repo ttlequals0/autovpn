@@ -7,6 +7,7 @@ This script assumes theat all aws credentails and tools are already setup on sys
 4. Import the OpenVPN config file into VPN client.
 5. Connect to VPN.
 
+<pre><code>
 DESCRIPTION:
        	 autovpn - AWS OpenVPN Deployment Tool.
 	 Project found at https://github.com/ttlequals0/autovpn
@@ -27,3 +28,4 @@ NOTES:
 	 *** - Since all ami's aren't located in all regions the ami being used will need to
 	 be changed to one that exists in that region. An option to do this will be added soon
 	 fir now this will need to be manually changed in python script.
+</pre></code>
