@@ -87,6 +87,6 @@ do
 done
 
 echo -e "${white}Setting up VPN on $instance_ip"
-ssh $ssh_options "$user"@$instance_ip "$get_script && $run_script" 
-scp $user@$instance_ip:"$remote_path" "$local_path" 
+ssh $ssh_options "$user"@$instance_ip "$get_script && $run_script" || bail 4
+scp $user@$instance_ip:"$remote_path" "$local_path" || bail 5
 echo -e "${green}OpenVPN config file is located at ~/Downloads"
