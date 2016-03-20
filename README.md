@@ -1,3 +1,6 @@
+[![asciicast](https://asciinema.org/a/39964.png)](https://asciinema.org/a/39964)
+
+
 This script assumes that all AWS credentials and tools are already setup on system.
 
 1. Clone rep to system.
