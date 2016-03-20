@@ -17,10 +17,10 @@ function usage {
 	echo -e "${white}DESCRIPTION:\n       $gray\t $(basename $0) - AWS OpenVPN Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
 	echo -e "${white}USAGE:\n       $gray ACTION\t [OPTIONS] "
 	echo -e "       $white-h$gray\t Displays this message."	
-	echo -e "       $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t\t\t t2.nano t2.micro t2.small t2.medium t2.large *"	
+	echo -e "       $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t\t t2.nano t2.micro t2.small t2.medium t2.large *"	
 	echo -e "       $white-k$gray\t Specify the name of AWS keypair (Required) **"
-	echo -e "       $white-r$gray\t Specify AWS Region (Optional, will use default region)\n\t\t\t us-east-1 us-west-1 us-west-2 eu-west-1 eu-west-1\n\t\t\t \
-ap-southeast-1 ap-northeast-1 ap-northeast-2 ap-southeast-2\n\t\t\t sa-east-1 cn-north-1 ***"
+	echo -e "       $white-r$gray\t Specify AWS Region (Optional, will use default region)\n\t\t us-east-1 us-west-1 us-west-2 eu-west-1 eu-west-1\n\t\t \
+ap-southeast-1 ap-northeast-1 ap-northeast-2 ap-southeast-2\n\t\t sa-east-1 cn-north-1 ***"
 	echo -e "${white}NOTES:\n       $gray\t * - In reality any instance size can be given but the t2.micro is more than enough.\n\t ** - If you choose to deploy an endpoint in a different region make sure\n\t \
 you have a keypair setup in that region.\n\t *** - Since all ami's aren't located in all regions the ami being used will need to\n\t be changed to one that exists in that region. An option to do this will be added soon\n\t \
 fir now this will need to be manually changed in python script."
