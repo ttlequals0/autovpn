@@ -3,7 +3,7 @@ This script assumes theat all aws credentails and tools are already setup on sys
 1. Clone rep to system.
 2. Execute autovpn with -k options to deploy to your default AWS region.
 	./autovpn -k macbook
-3. OpenVPN config files are downloaded to ~/Downloads.
+3. OpenVPN config files are downloaded to current working directory.
 4. Import the OpenVPN config file into VPN client.
 5. Connect to VPN.
 

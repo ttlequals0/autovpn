@@ -30,6 +30,7 @@ fir now this will need to be manually changed in python script."
 bail ()
 {
 	echo -e "${red}Something failed code $1"
+  usage
 	exit 
 }
 
@@ -53,11 +54,11 @@ while getopts ":k:hr:i:" opt; do
       region="$OPTARG"
       ;;      
     \?)
-      echo "Invalid option: -$OPTARG" >&2 && usage
+      echo "Invalid option: -$OPTARG" >&2
       bail 1
       ;;
     :)
-      echo "Option -$OPTARG requires an argument." >&2 && usage
+      echo "Option -$OPTARG requires an argument." >&2 
       bail 2      
   esac
 done
@@ -67,9 +68,9 @@ if [[ -z "$instance_type" ]]; then
 fi
 
 if [[ -z "$region" ]]; then
-	local_path="$HOME/Downloads/aws_vpn.ovpn"
+	local_path="$(pwd)/aws_vpn.ovpn"
 else
-	local_path="$HOME/Downloads/${region}_aws_vpn.ovpn"
+	local_path="$(pwd)/${region}_aws_vpn.ovpn"
 fi
 
 
@@ -89,4 +90,4 @@ done
 echo -e "${white}Setting up VPN on $instance_ip"
 ssh $ssh_options "$user"@$instance_ip "$get_script && $run_script" || bail 4
 scp $user@$instance_ip:"$remote_path" "$local_path" || bail 5
-echo -e "${green}OpenVPN config file is located at ~/Downloads"
+echo -e "${green}OpenVPN config file is located at $(pwd)"
