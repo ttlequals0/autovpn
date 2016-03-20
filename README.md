@@ -1,4 +1,4 @@
-This script assumes theat all aws credentails and tools are already setup on system.
+This script assumes that all AWS credentials and tools are already setup on system.
 
 1. Clone rep to system.
 2. Execute autovpn with -k options to deploy to your default AWS region.
@@ -10,7 +10,7 @@ This script assumes theat all aws credentails and tools are already setup on sys
 <pre><code>
 DESCRIPTION:
        	 autovpn - AWS OpenVPN Deployment Tool.
-	 Project found at https://github.com/ttlequals0/autovpn
+		 Project found at https://github.com/ttlequals0/autovpn
 USAGE:
         ACTION	 [OPTIONS]
        -h	 Displays this message.
@@ -22,10 +22,12 @@ USAGE:
 			 ap-southeast-1 ap-northeast-1 ap-northeast-2 ap-southeast-2
 			 sa-east-1 cn-north-1 ***
 NOTES:
-       	 * - In reality any instance size can be given but the t2.micro is more than enough.
-	 ** - If you choose to deploy an endpoint in a different region make sure
-	 you have a keypair setup in that region.
-	 *** - Since all ami's aren't located in all regions the ami being used will need to
-	 be changed to one that exists in that region. An option to do this will be added soon
-	 fir now this will need to be manually changed in python script.
+       	\* - In reality any instance size can be given but the t2.micro is more than 
+       	 enough.
+		\** - If you choose to deploy an endpoint in a different region make sure
+		you have a keypair setup in that region.
+		\*** - Since all ami's aren't located in all regions the ami being used will 
+		need to  be changed to one that exists in that region. An option to do this 
+		will be	added soon for now this will need to be manually changed in python 
+		script.
 </pre></code>
