@@ -7,13 +7,14 @@ import sys
 keyname=sys.argv[1]
 instance_type=sys.argv[2]
 region=sys.argv[3]
+ami=sys.argv[4]
 
 if region:
     conn_region = boto.ec2.connect_to_region(region)
 else:
     conn_region = boto.connect_ec2()
 
-def auto_vpn(ami="ami-d05e75b8",
+def auto_vpn(ami=ami,
                     instance_type=instance_type,
                     key_name=keyname,
                    	group_name="vpn_2",
