@@ -1,4 +1,4 @@
-[![asciicast](https://asciinema.org/a/39964.png)](https://asciinema.org/a/39964)
+[![asciicast](https://asciinema.org/a/40407.png)](https://asciinema.org/a/40407)
 
 
 This script assumes that all AWS credentials and tools are already setup on system.
