@@ -29,6 +29,15 @@ USAGE:
 			 ap-southeast-1 ap-northeast-1 ap-northeast-2 ap-southeast-2
 			 sa-east-1 
 	   -z	 Specify instance id.	 
+EXAMPLES:
+  Create OpenVPN endpoint:
+	autovpn -C -r us-east-1 -k macbook
+  Generate keypar in a region.
+	autovpn -G -r us-east-1
+  Get running instances
+	autovpn -S -r us-west-1
+  Terminate OpenVPN endpoint
+	autovpn -T -r us-west-1 -z i-b933e00c
 NOTES:
        	\* - In reality any instance size can be given but the t2.micro is more than 
        	 enough.
