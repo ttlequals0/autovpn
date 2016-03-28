@@ -18,13 +18,19 @@ function usage {
 	echo -e "${white}DESCRIPTION:\n $gray        $(basename $0) - AWS OpenVPN Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
   echo -e "${white}USAGE:\n $gray ACTION\t [OPTIONS] 
   $white-C$gray\t Create VPN endpoint.
+  $white-G$gray\t Generate new keypair.
+  $white-S$gray\t Get all running instances in a given region.
+  $white-T$gray\t Terminate a OpenVPN endpoint.
   $white-h$gray\t Displays this message.
   $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t t2.nano t2.micro t2.small t2.medium t2.large *
-  $white-k$gray\t Specify the name of AWS keypair (Required) **
-  $white-r$gray\t Specify AWS Region (Required)\n\t us-east-1 us-west-1 us-west-2 eu-west-1 eu-central-1\n\t \
-ap-southeast-1 ap-northeast-1 ap-northeast-2 sa-east-1\n\t ap-southeast-2"
-  echo -e "${white}NOTES:\n $gray* - In reality any instance size can be given but the t2.micro\n is more than enough.\n ** - If you choose to deploy an endpoint in a different region\n make sure\
- you have a keypair setup in that region"
+  $white-k$gray\t Specify the name of AWS keypair.
+  $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-west-1 us-west-2 eu-west-1 eu-central-1\n\t\
+ ap-southeast-1 ap-northeast-1 ap-northeast-2 sa-east-1\n\t ap-southeast-2
+  $white-z$gray\t Specify instance id." 
+  echo -e "${white}EXAMPLES:\n $gray Create OpenVPN endpoint: \n\tautovpn -C -r us-east-1 -k macbook\n\
+  Generate keypar in a region.\n\tautovpn -G -r us-east-1\n  Get running instances\n\tautovpn -S -r us-west-1\n\
+  Terminate OpenVPN endpoint\n\tautovpn -T -r us-west-1 -z i-b933e00c"
+  echo -e "${white}NOTES:\n $gray* - In reality any instance size can be given but the t2.micro\n is more than enough."
 }
 
 
@@ -35,21 +41,29 @@ bail ()
 	exit 
 }
 
-if ( ! getopts "Ck:hr:i:" opt); then
+if ( ! getopts "CGSTk:hr:i:z:" opt); then
 	usage;
 	exit 1;
 fi
 
-while getopts ":Ck:hr:i:" opt; do
+while getopts ":CGSTk:hr:i:z:" opt; do
   case $opt in
     C)
       Cflag="defined"
       ;;    
+    G)
+      Gflag="defined"
+      ;;
+    S)
+      Sflag="defined"
+      ;; 
+    T)
+      Tflag="defined"
+      ;;                  
     h)
       usage && exit 0
       ;; 
     i)
-      iflag="defined"
       instance_type="$OPTARG"
       ;;       	
     k)
@@ -58,7 +72,7 @@ while getopts ":Ck:hr:i:" opt; do
       ;;
     r)
       rflag="defined"
-      if [ "$OPTARG" == "us-east-1" ] 
+      if [ "$OPTARG" == "us-east-1" ]
         then
         region="us-east-1"
         ami="ami-d05e75b8"
@@ -99,9 +113,13 @@ while getopts ":Ck:hr:i:" opt; do
         region="sa-east-1"
         ami="ami-0fb83963"
       else 
-        echo "Not a valid region" || bail 3   
+        echo "Not a valid region" ; bail 3   
       fi                                               
-      ;;      
+      ;; 
+    z)
+      zflag="defined"
+      term_ids="$OPTARG"
+      ;;     
     \?)
       echo "Invalid option: -$OPTARG" >&2
       bail 1
@@ -132,13 +150,41 @@ if [ -n "$Cflag" ] && [ -n "$rflag" ] && [ -n "$kflag"  ]; then
 	   ssh-keyscan $instance_ip 2>&1 | grep -v "^$" > /dev/null
 	   status=$?
   done
-
   echo -e "${white}Setting up VPN on $instance_ip"
   ssh $ssh_options "$user"@$instance_ip "$get_script && $run_script" || bail 5
   scp $user@$instance_ip:"$remote_path" "$local_path" || bail 6
   echo -e "${green}OpenVPN config file is located at $(pwd)"
-else
-  echo "-r and -k are required"; bail 7
 fi 
 
+if [ -n "$Gflag" ] && [ -n "$rflag" ]; then
+  keypath=$(pwd)
+  if [ ! -f "$keypath/${region}_vpnkey.pem" ]; then
+    echo -e  "${white}Generating new key pair for $region."
+    generate_key=$(python keygen.py "${region}_vpnkey" "$region" "$keypath")
+    echo -e "${green}${region}_vpnkey has been created"
+    ssh-add -l &>/dev/null
+    if [ "$?" == 2 ]; then
+      eval $(ssh-agent) &>/dev/null
+    fi
+    ssh-add "$keypath/${region}_vpnkey.pem"  &>/dev/null
+  elif [ -f "$keypath/${region}_vpnkey.pem" ]; then
+    echo -e "${yellow}A Keypair for this region already exists."
+  fi
+  echo -e "${green}Use ${region}_vpnkey as keyname to create endpoint."
+fi 
 
+if [ -n "$Sflag" ] && [ -n "$rflag" ]; then
+  get_status=$(python get_status.py "$region")
+  echo -e "${green}Instances running in ${region}\n ${get_status}"
+fi  
+
+if [ -n "$Tflag" ] && [ -n "$rflag" ] && [ -n "$zflag" ]; then
+   echo -e "${yellow}WARNING: instance ${term_ids} in ${region} will be terminated. This is not reversible"
+   read -p "Are you sure you want to continue? y/n :" -n 1 -r
+   if [[ $REPLY =~ ^[Yy]$ ]]; then
+    python terminate.py "$region" "$term_ids"
+    echo -e "\n${green}${term_ids} have been terminated."
+   elif [[ $REPLY =~ ^[Nn]$ ]]; then
+    echo -e "\n${green}No instances were terminated."
+  fi
+fi
