@@ -1,7 +1,9 @@
 [![asciicast](https://asciinema.org/a/40608.png)](https://asciinema.org/a/40608)
 
 
-This script assumes that all AWS credentials and tools are already setup on system.
+Dependencies: Boto and aws .credentials file on system
+	
+
 
 1. Clone rep to system.
 2. Execute autovpn with -C -k and -r options to deploy to AWS
