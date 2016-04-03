@@ -19,6 +19,7 @@ def generate_key(key_name=keyname,
 
       try:
         key = ec2.get_all_key_pairs(keynames=[key_name])[0]
+        
       except ec2.ResponseError, e:
         if e.code == 'InvalidKeyPair.NotFound':
             # Create an SSH key 
@@ -26,8 +27,10 @@ def generate_key(key_name=keyname,
       
             #Save key 
             key.save(key_dir)
+            print "Success"
         else:
             raise
+
 
 
 if __name__ == "__main__": 

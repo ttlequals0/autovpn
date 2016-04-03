@@ -1,7 +1,6 @@
 import time
 import boto
 import boto.ec2
-import boto.manage.cmdshell
 import sys
 
 keyname=sys.argv[1]
@@ -22,9 +21,7 @@ def auto_vpn(ami=ami,
                     vpn_port="1194",
                     cidr="0.0.0.0/0",
                     tag="auto_vpn",
-                    user_data=None,
-                    cmd_shell=True,
-                    login_user="ec2-user"):
+                    user_data=None):
 	
 
 	ec2 = conn_region 
@@ -33,20 +30,20 @@ def auto_vpn(ami=ami,
     		group = ec2.get_all_security_groups(groupnames=[group_name])[0]
 	except ec2.ResponseError, e:
     		if e.code == 'InvalidGroup.NotFound':
-        		"""print'Creating security group %s' % group_name"""
         		group = ec2.create_security_group(group_name,
                                                 'A group that allows VPN access')
     		else:
         		raise
-	try:
+	try:   
     		group.authorize('tcp',ssh_port,ssh_port,cidr)
     		group.authorize('udp',vpn_port,vpn_port,cidr)
 
 	except ec2.ResponseError, e:
     		if e.code == 'InvalidPermission.Duplicate':
-        		"""print ('Security group %s already exists') % group_name"""
-    		else:
-        		raise
+                    """print ('Security group %s already exists') % group_name"""
+                else:
+        	   raise
+
 	reservation = ec2.run_instances(ami,
     	key_name=key_name,
     	security_groups=[group_name],
