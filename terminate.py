@@ -17,6 +17,5 @@ def ec2_terminate():
 	print "Success"	
 	
 
-
 if __name__ == "__main__": 
     ec2_terminate()
