@@ -14,7 +14,7 @@ def ec2_terminate():
 	ec2 = conn_region  
 	
 	ec2.terminate_instances(instance_ids=[instances])
-	print "success"	
+	print "Success"	
 	
 
 
