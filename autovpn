@@ -44,9 +44,9 @@ bail ()
 
 failed ()
 {
-  if [ $1 == "1" ]; then 
+  if [ "$1" == "1" ]; then 
   echo -e "${red}Key already exists in AWS\n"
-  elif [ $1 == "2" ]; then 
+  elif [ "$1" == "2" ]; then 
   echo -e "${red}\nFailed to terminate instance"
   fi
   exit 
@@ -59,85 +59,29 @@ fi
 
 while getopts ":CGSTk:hr:i:z:" opt; do
   case $opt in
-    C)
-      Cflag="defined"
-      ;;    
-    G)
-      Gflag="defined"
-      ;;
-    S)
-      Sflag="defined"
+    C) Cflag="defined" ;;    
+    G) Gflag="defined" ;;
+    S) Sflag="defined" ;; 
+    T) Tflag="defined" ;;                  
+    h) usage && exit 0 ;; 
+    i) instance_type="$OPTARG" ;;       	
+    k) kflag="defined"; keyname="$OPTARG" ;;
+    r) rflag="defined"
+      if [ "$OPTARG" == "us-east-1" ]; then region="us-east-1"; ami="ami-d05e75b8"
+      elif [ "$OPTARG" == "us-west-1" ]; then region="us-west-1"; ami="ami-06116566"
+      elif [ "$OPTARG" == "us-west-2" ]; then region="us-west-2"; ami="ami-9abea4fb"
+      elif [ "$OPTARG" == "eu-west-1" ]; then region="eu-west-1"; ami="ami-f95ef58a"
+      elif [ "$OPTARG" == "eu-central-1" ]; then region="eu-central-1"; ami="ami-87564feb"  
+      elif [ "$OPTARG" == "ap-northeast-1" ]; then region="ap-northeast-1"; ami="ami-a21529cc"
+      elif [ "$OPTARG" == "ap-northeast-2" ]; then region="ap-northeast-2"; ami="ami-09dc1267"
+      elif [ "$OPTARG" == "ap-southeast-1" ]; then region="ap-southeast-1"; ami="ami-25c00c46"
+      elif [ "$OPTARG" == "ap-southeast-2" ]; then region="ap-southeast-2"; ami="ami-6c14310f" 
+      elif [ "$OPTARG" == "sa-east-1" ]; then region="sa-east-1"; ami="ami-0fb83963"
+      else echo "Not a valid region"; bail 3; fi                                               
       ;; 
-    T)
-      Tflag="defined"
-      ;;                  
-    h)
-      usage && exit 0
-      ;; 
-    i)
-      instance_type="$OPTARG"
-      ;;       	
-    k)
-      kflag="defined"
-      keyname="$OPTARG"
-      ;;
-    r)
-      rflag="defined"
-      if [ "$OPTARG" == "us-east-1" ]
-        then
-        region="us-east-1"
-        ami="ami-d05e75b8"
-      elif [ "$OPTARG" == "us-west-1" ]
-        then        
-        region="us-west-1"
-        ami="ami-06116566"
-      elif [ "$OPTARG" == "us-west-2" ]
-        then       
-        region="us-west-2"
-        ami="ami-9abea4fb"
-      elif [ "$OPTARG" == "eu-west-1" ]
-        then       
-        region="eu-west-1"
-        ami="ami-f95ef58a"
-      elif [ "$OPTARG" == "eu-central-1" ]
-        then
-        region="eu-central-1"
-        ami="ami-87564feb"  
-      elif [ "$OPTARG" == "ap-northeast-1" ]
-        then
-        region="ap-northeast-1"
-        ami="ami-a21529cc"
-      elif [ "$OPTARG" == "ap-northeast-2" ]
-        then
-        region="ap-northeast-2"
-        ami="ami-09dc1267"
-      elif [ "$OPTARG" == "ap-southeast-1" ]
-        then
-        region="ap-southeast-1"
-        ami="ami-25c00c46"
-      elif [ "$OPTARG" == "ap-southeast-2" ]
-        then
-        region="ap-southeast-2"
-        ami="ami-6c14310f" 
-      elif [ "$OPTARG" == "sa-east-1" ]
-        then
-        region="sa-east-1"
-        ami="ami-0fb83963"
-      else 
-        echo "Not a valid region" ; bail 3   
-      fi                                               
-      ;; 
-    z)
-      zflag="defined"
-      term_ids="$OPTARG"
-      ;;     
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      bail 1
-      ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2 
-      bail 2      
+    z) zflag="defined"; term_ids="$OPTARG" ;;     
+    \?) echo "Invalid option: -$OPTARG" >&2 ; bail 1 ;;
+    :)  echo "Option -$OPTARG requires an argument." >&2 ; bail 2      
   esac
 done
 
