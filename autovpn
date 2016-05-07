@@ -21,16 +21,21 @@ function usage {
   $white-G$gray\t Generate new keypair.
   $white-S$gray\t Get all running instances in a given region.
   $white-T$gray\t Terminate a OpenVPN endpoint.
+  $white-a$gray\t Specify a custom ami.*
   $white-h$gray\t Displays this message.
-  $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t t2.nano t2.micro t2.small t2.medium t2.large *
+  $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t t2.nano t2.micro t2.small t2.medium t2.large **
   $white-k$gray\t Specify the name of AWS keypair.
   $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-west-1 us-west-2 eu-west-1 eu-central-1\n\t\
- ap-southeast-1 ap-northeast-1 ap-northeast-2 sa-east-1\n\t ap-southeast-2
+ ap-southeast-1 ap-northeast-1 ap-northeast-2 sa-east-1\n\t ap-southeast-2.
+  $white-u$gray\t Specify custom ssh user.***
   $white-z$gray\t Specify instance id." 
   echo -e "${white}EXAMPLES:\n $gray Create OpenVPN endpoint: \n\tautovpn -C -r us-east-1 -k macbook\n\
   Generate keypar in a region.\n\tautovpn -G -r us-east-1\n  Get running instances\n\tautovpn -S -r us-west-1\n\
-  Terminate OpenVPN endpoint\n\tautovpn -T -r us-west-1 -z i-b933e00c"
-  echo -e "${white}NOTES:\n $gray* - In reality any instance size can be given but the t2.micro\n is more than enough."
+  Terminate OpenVPN endpoint\n\tautovpn -T -r us-west-1 -z i-b933e00c\n  Using custom options\n\
+  \tautovpn -C -r us-east-1 -k macbook -a ami-fce3c696 -u ec2_user -i m3.medium"
+  echo -e "${white}NOTES:\n $gray* - Customs ami may be needed if changing instance type.\n $gray** - In reality any\
+  instance size can be given but the t2.micro\n is more than enough.\n\
+ $gray*** - Custom user might be need if using a custom ami."
 }
 
 
@@ -52,17 +57,18 @@ failed ()
   exit 
 }
 
-if ( ! getopts "CGSTk:hr:i:z:" opt); then
+if ( ! getopts "CGSTk:a:hr:i:u:z:" opt); then
 	usage;
 	exit 1;
 fi
 
-while getopts ":CGSTk:hr:i:z:" opt; do
+while getopts ":CGSTk:a:hr:i:u:z:" opt; do
   case $opt in
     C) Cflag="defined" ;;    
     G) Gflag="defined" ;;
     S) Sflag="defined" ;; 
-    T) Tflag="defined" ;;                  
+    T) Tflag="defined" ;;
+    a) custom_ami="$OPTARG" ;;                  
     h) usage && exit 0 ;; 
     i) instance_type="$OPTARG" ;;       	
     k) kflag="defined"; keyname="$OPTARG" ;;
@@ -79,15 +85,16 @@ while getopts ":CGSTk:hr:i:z:" opt; do
       elif [ "$OPTARG" == "sa-east-1" ]; then region="sa-east-1"; ami="ami-0fb83963"
       else echo "Not a valid region"; bail 3; fi                                               
       ;; 
+    u) custom_user="$OPTARG" ;;       
     z) zflag="defined"; term_ids="$OPTARG" ;;     
     \?) echo "Invalid option: -$OPTARG" >&2 ; bail 1 ;;
     :)  echo "Option -$OPTARG requires an argument." >&2 ; bail 2      
   esac
 done
 
-if [[ -z "$instance_type" ]]; then
-	instance_type="t2.micro"
-fi
+if [[ -z "$instance_type" ]]; then 	instance_type="t2.micro"; fi
+if [[ -n "$custom_ami" ]]; then  ami="$custom_ami"; fi
+if [[ -n "$custom_user" ]]; then  user="$custom_user"; fi
 
 local_path="$(pwd)/${region}_aws_vpn.ovpn"
 
@@ -114,7 +121,7 @@ fi
 if [ -n "$Gflag" ] && [ -n "$rflag" ] ; then
   keypath=$(pwd)
   if [ ! -f "$keypath/${region}_vpnkey.pem" ]; then
-    echo -e  "${white}Generating new key pair for $region."
+    echo -e  "${white}Generating new keypair for $region."
     generate_key=$(python keygen.py "${region}_vpnkey" "$region" "$keypath")
     [[ $generate_key == "Success" ]] || failed 1
     echo -e "${green}${region}_vpnkey has been created"
