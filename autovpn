@@ -57,6 +57,7 @@ failed ()
   elif [ "$1" == "3" ]; then 
   echo -e "${red}\nFailed to delete keypair"  
   fi
+  tput sgr0 
   exit 
 }
 
