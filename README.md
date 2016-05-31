@@ -5,9 +5,9 @@ Dependencies: Boto and aws .credentials file on system
 	
 
 
-1. Clone rep to system.
+1. Clone repo to system.
 2. Execute autovpn with -C -k and -r options to deploy to AWS
-	./autovpn -C -r us-east-1 -k macbook
+	`./autovpn -C -r us-east-1 -k macbook`
 3. OpenVPN config files are downloaded to current working directory.
 4. Import the OpenVPN config file into VPN client.
 5. Connect to VPN.
