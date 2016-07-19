@@ -31,6 +31,7 @@ function usage {
   $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-west-1 us-west-2 eu-west-1 eu-central-1\n\t\
  ap-southeast-1 ap-northeast-1 ap-northeast-2 sa-east-1\n\t ap-southeast-2 ap-south-1.
   $white-u$gray\t Specify custom ssh user.***
+  $white-y$gray\t Skip confirmations
   $white-z$gray\t Specify instance id." 
   echo -e "${white}EXAMPLES:\n $gray Create OpenVPN endpoint: \n\tautovpn -C -r us-east-1 -k macbook\n\
   Generate keypar in a region.\n\tautovpn -G -r us-east-1\n  Get running instances\n\tautovpn -S -r us-west-1\n\
@@ -63,12 +64,12 @@ failed ()
   exit 
 }
 
-if ( ! getopts "CDGSTk:a:hr:i:u:z:" opt); then
+if ( ! getopts "CDGSTyk:a:hr:i:u:z:" opt); then
 	usage;
 	exit 1;
 fi
 
-while getopts ":CDGSTk:a:hr:i:u:z:" opt; do
+while getopts ":CDGSTyk:a:hr:i:u:z:" opt; do
   case $opt in
     C) Cflag="defined" ;;
     D) Dflag="defined" ;;        
@@ -94,6 +95,7 @@ while getopts ":CDGSTk:a:hr:i:u:z:" opt; do
       else echo "Not a valid region"; bail 3; fi                                               
       ;; 
     u) custom_user="$OPTARG" ;;       
+    y) yflag="defined" ;;
     z) zflag="defined"; term_ids="$OPTARG" ;;     
     \?) echo "Invalid option: -$OPTARG" >&2 ; bail 1 ;;
     :)  echo "Option -$OPTARG requires an argument." >&2 ; bail 2      
@@ -105,6 +107,16 @@ if [[ -n "$custom_ami" ]]; then  ami="$custom_ami"; fi
 if [[ -n "$custom_user" ]]; then  user="$custom_user"; fi
 
 local_path="$(pwd)/${region}_aws_vpn.ovpn"
+
+
+confirm ()
+{
+  if [[ -n "$yflag" ]]; then
+    REPLY="Y"
+  else
+   read -p "Are you sure you want to continue? y/n :" -n 1 -r
+  fi
+}
 
 
 if [ -n "$Cflag" ] && [ -n "$rflag" ] && [ -n "$kflag"  ] ; then
@@ -152,7 +164,7 @@ fi
 
 if [ -n "$Tflag" ] && [ -n "$rflag" ] && [ -n "$zflag" ]  ; then
    echo -e "${yellow}WARNING: instance ${term_ids} in ${region} will be terminated. This is not reversible"
-   read -p "Are you sure you want to continue? y/n :" -n 1 -r
+   confirm
    if [[ $REPLY =~ ^[Yy]$ ]]; then
     termec2=$(python terminate.py "$region" "$term_ids")
     [[ $termec2 == "Success" ]] || failed 2
@@ -164,7 +176,7 @@ fi
 
 if [ -n "$Dflag" ] && [ -n "$rflag" ] && [ -n "$kflag" ]  ; then
    echo -e "${yellow}WARNING: Keypair ${keyname} in ${region} will be deleted. This is not reversible"
-   read -p "Are you sure you want to continue? y/n :" -n 1 -r
+   confirm
    if [[ $REPLY =~ ^[Yy]$ ]]; then
     delkey=$(python delete_key.py "$region" "$keyname")
     [[ $delkey == "Success" ]] || failed 3
