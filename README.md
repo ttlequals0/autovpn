@@ -18,8 +18,8 @@ USAGE:
        -C    Create VPN endpoint.
        -G    Generate new keypair.
        -S    Get all running instances in a given region.
-       -T    Terminate a OpenVPN endpoint. 
-       -a    Specify custom ami.*             
+       -T    Terminate a OpenVPN endpoint.
+       -a    Specify custom ami.*
        -h    Displays this message.
        -i    AWS Instance type (Optional, Default is t2.micro)
 		t2.nano t2.micro t2.small t2.medium t2.large.**
@@ -27,24 +27,25 @@ USAGE:
        -r    Specify AWS Region (Required)
 		us-east-1 us-west-1 us-west-2 eu-west-1 eu-central-1
 		ap-southeast-1 ap-northeast-1 ap-northeast-2 ap-southeast-2
-		sa-east-1 
-       -u    Specify custom ssh user.***      
-       -z    Specify instance id.	 
+		sa-east-1
+       -u    Specify custom ssh user.***
+       -y    Skip confirmations
+       -z    Specify instance id.
 EXAMPLES:
   Create OpenVPN endpoint:
 	autovpn -C -r us-east-1 -k macbook
   Generate keypar in a region.
 	autovpn -G -r us-east-1
   Get running instances
-	autovpn -S -r us-west-1
+	autovpn -S -r us-east-1
   Terminate OpenVPN endpoint
-	autovpn -T -r us-west-1 -z i-b933e00c
+	autovpn -T -r us-east-1 -z i-b933e00c
   Using custom options
     autovpn -C -r us-east-1 -k macbook -a ami-fce3c696 -u ec2_user -i m3.medium
 NOTES:
         \* - Customs ami may be needed if changing instance type.
-       	\** - In reality any instance size can be given but the t2.micro is more than 
+       	\** - In reality any instance size can be given but the t2.micro is more than
        	 enough.
-        \*** - Custom user might be need if using a custom ami.        
+        \*** - Custom user might be need if using a custom ami.
 
 </pre></code>
