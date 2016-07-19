@@ -1,8 +1,10 @@
 #!/bin/bash
 
-ssh_options="-o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 -o ConnectTimeout=30 -t -t "
+scp_options="-o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 -o ConnectTimeout=30 "
+ssh_options="${scp_options}-t -t "
 user='ubuntu'
-get_script="wget http://git.io/vWVpZ --no-check-certificate -O openvpn-autoinstall.sh"
+local_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/openvpn-autoinstall.sh"
+remote_script="\$HOME/openvpn-autoinstall.sh"
 run_script="sudo bash ./openvpn-autoinstall.sh"
 remote_path="\$HOME/aws_vpn.ovpn"
 
@@ -119,8 +121,9 @@ if [ -n "$Cflag" ] && [ -n "$rflag" ] && [ -n "$kflag"  ] ; then
 	   status=$?
   done
   echo -e "${white}Setting up VPN on $instance_ip"
-  ssh $ssh_options "$user"@$instance_ip "$get_script && $run_script" || bail 5
-  scp $user@$instance_ip:"$remote_path" "$local_path" || bail 6
+  scp $scp_options "$local_script" $user@$instance_ip:"$remote_script" || bail 5
+  ssh $ssh_options "$user"@$instance_ip "chmod +x $remote_script && $run_script" || bail 6
+  scp $scp_options $user@$instance_ip:"$remote_path" "$local_path" || bail 7
   echo -e "${green}OpenVPN config file is located at $(pwd)"
 fi 
 
