@@ -1,6 +1,6 @@
 #!/bin/bash
 
-scp_options="-o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 -o ConnectTimeout=30 "
+scp_options="-o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 -o ConnectTimeout=30 -o \"UserKnownHostsFile /dev/null\" "
 ssh_options="${scp_options}-t -t "
 user='ubuntu'
 local_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/openvpn-autoinstall.sh"
