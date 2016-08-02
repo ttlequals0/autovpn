@@ -1,7 +1,6 @@
 #!/bin/bash
 
-scp_options="-o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 -o ConnectTimeout=30 -o \"UserKnownHostsFile /dev/null\" "
-ssh_options="${scp_options}-t -t "
+scp_options=(-o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 -o ConnectTimeout=30 -o "UserKnownHostsFile /dev/null")
 user='ubuntu'
 local_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/openvpn-autoinstall.sh"
 remote_script="\$HOME/openvpn-autoinstall.sh"
@@ -42,6 +41,14 @@ function usage {
  $gray*** - Custom user might be need if using a custom ami."
 }
 
+
+sshcmd() {
+  ssh "${scp_options[@]}" -t -t $@
+}
+
+scpcmd() {
+  scp "${scp_options[@]}" $@
+}
 
 bail ()
 {
@@ -133,9 +140,9 @@ if [ -n "$Cflag" ] && [ -n "$rflag" ] && [ -n "$kflag"  ] ; then
 	   status=$?
   done
   echo -e "${white}Setting up VPN on $instance_ip"
-  scp $scp_options "$local_script" $user@$instance_ip:"$remote_script" || bail 5
-  ssh $ssh_options "$user"@$instance_ip "chmod +x $remote_script && $run_script" || bail 6
-  scp $scp_options $user@$instance_ip:"$remote_path" "$local_path" || bail 7
+  scpcmd "$local_script" $user@$instance_ip:"$remote_script" || bail 5
+  sshcmd "$user"@$instance_ip "chmod +x $remote_script && $run_script" || bail 6
+  scpcmd $user@$instance_ip:"$remote_path" "$local_path" || bail 7
   echo -e "${green}OpenVPN config file is located at $(pwd)"
 fi 
 
