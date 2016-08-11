@@ -1,4 +1,7 @@
 *.pem
 *.ovpn
-rec
+rec.sh
+test.sh
+test.log
+regions
 .DS_Store
