@@ -27,8 +27,8 @@ function usage {
   $white-h$gray\t Displays this message.
   $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t t2.nano t2.micro t2.small t2.medium t2.large **
   $white-k$gray\t Specify the name of AWS keypair.
-  $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-west-1 us-west-2 eu-west-1 eu-central-1\n\t\
- ap-southeast-1 ap-northeast-1 ap-northeast-2 sa-east-1\n\t ap-southeast-2 ap-south-1.
+  $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-east-2 us-west-1 us-west-2 eu-west-1\n\t\
+ eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
   $white-u$gray\t Specify custom ssh user.***
   $white-y$gray\t Skip confirmations
   $white-z$gray\t Specify instance id." 
@@ -89,6 +89,7 @@ while getopts ":CDGSTyk:a:hr:i:u:z:" opt; do
     k) kflag="defined"; keyname="$OPTARG" ;;
     r) rflag="defined"
       if [ "$OPTARG" == "us-east-1" ]; then region="us-east-1"; ami="ami-d05e75b8"
+      elif [ "$OPTARG" == "us-east-2" ]; then region="us-east-2"; ami="ami-153e6470"
       elif [ "$OPTARG" == "us-west-1" ]; then region="us-west-1"; ami="ami-06116566"
       elif [ "$OPTARG" == "us-west-2" ]; then region="us-west-2"; ami="ami-9abea4fb"
       elif [ "$OPTARG" == "eu-west-1" ]; then region="eu-west-1"; ami="ami-f95ef58a"
@@ -99,6 +100,7 @@ while getopts ":CDGSTyk:a:hr:i:u:z:" opt; do
       elif [ "$OPTARG" == "ap-southeast-2" ]; then region="ap-southeast-2"; ami="ami-6c14310f" 
       elif [ "$OPTARG" == "sa-east-1" ]; then region="sa-east-1"; ami="ami-0fb83963"
       elif [ "$OPTARG" == "ap-south-1" ]; then region="ap-south-1"; ami="ami-4a90fa25"
+      elif [ "$OPTARG" == "ca-central-1" ]; then region="ca-central-1"; ami="ami-0651e362"
       else echo "Not a valid region"; bail 3; fi                                               
       ;; 
     u) custom_user="$OPTARG" ;;       
