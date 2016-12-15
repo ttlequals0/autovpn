@@ -27,7 +27,7 @@ function usage {
   $white-h$gray\t Displays this message.
   $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t t2.nano t2.micro t2.small t2.medium t2.large **
   $white-k$gray\t Specify the name of AWS keypair.
-  $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-east-2 us-west-1 us-west-2 eu-west-1\n\t\
+  $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-east-2 us-west-1 us-west-2 eu-west-1 eu-west-2\n\t\
  eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
   $white-u$gray\t Specify custom ssh user.***
   $white-y$gray\t Skip confirmations
@@ -93,6 +93,7 @@ while getopts ":CDGSTyk:a:hr:i:u:z:" opt; do
       elif [ "$OPTARG" == "us-west-1" ]; then region="us-west-1"; ami="ami-06116566"
       elif [ "$OPTARG" == "us-west-2" ]; then region="us-west-2"; ami="ami-9abea4fb"
       elif [ "$OPTARG" == "eu-west-1" ]; then region="eu-west-1"; ami="ami-f95ef58a"
+      elif [ "$OPTARG" == "eu-west-2" ]; then region="eu-west-2"; ami="ami-23d0da47"
       elif [ "$OPTARG" == "eu-central-1" ]; then region="eu-central-1"; ami="ami-87564feb"  
       elif [ "$OPTARG" == "ap-northeast-1" ]; then region="ap-northeast-1"; ami="ami-a21529cc"
       elif [ "$OPTARG" == "ap-northeast-2" ]; then region="ap-northeast-2"; ami="ami-09dc1267"
