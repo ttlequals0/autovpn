@@ -16,7 +16,7 @@ yellow='\033[00;33m'
 
 function usage {
   # ---------------------------------------------------------------------------
-	echo -e "${white}DESCRIPTION:\n $gray        $(basename $0) - AWS OpenVPN Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
+	echo -e "${white}DESCRIPTION:\n $gray        $(basename "$0") - AWS OpenVPN Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
   echo -e "${white}USAGE:\n $gray ACTION\t [OPTIONS] 
   $white-C$gray\t Create VPN endpoint.
   $white-D$gray\t Delete keypair from region.  
@@ -27,6 +27,7 @@ function usage {
   $white-h$gray\t Displays this message.
   $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t t2.nano t2.micro t2.small t2.medium t2.large **
   $white-k$gray\t Specify the name of AWS keypair.
+  $white-m$gray\t Allow multiple connections to same endpoint.
   $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-east-2 us-west-1 us-west-2 eu-west-1 eu-west-2\n\t\
  eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
   $white-u$gray\t Specify custom ssh user.***
@@ -71,12 +72,12 @@ failed ()
   exit 
 }
 
-if ( ! getopts "CDGSTyk:a:hr:i:u:z:" opt); then
+if ( ! getopts "CDGSTyk:a:hmr:i:u:z:" opt); then
 	usage;
 	exit 1;
 fi
 
-while getopts ":CDGSTyk:a:hr:i:u:z:" opt; do
+while getopts ":CDGSTyk:a:hmr:i:u:z:" opt; do
   case $opt in
     C) Cflag="defined" ;;
     D) Dflag="defined" ;;        
@@ -87,6 +88,7 @@ while getopts ":CDGSTyk:a:hr:i:u:z:" opt; do
     h) usage && exit 0 ;; 
     i) instance_type="$OPTARG" ;;       	
     k) kflag="defined"; keyname="$OPTARG" ;;
+    m) mflag="defined" ;;
     r) rflag="defined"
       if [ "$OPTARG" == "us-east-1" ]; then region="us-east-1"; ami="ami-d05e75b8"
       elif [ "$OPTARG" == "us-east-2" ]; then region="us-east-2"; ami="ami-153e6470"
@@ -115,6 +117,10 @@ done
 if [[ -z "$instance_type" ]]; then 	instance_type="t2.micro"; fi
 if [[ -n "$custom_ami" ]]; then  ami="$custom_ami"; fi
 if [[ -n "$custom_user" ]]; then  user="$custom_user"; fi
+if [[ -n "$mflag" ]] ; then
+  cp ./scripts/openvpn-autoinstall.sh{,.bak}
+  sed -i "123i echo 'duplicate-cn' >> /etc/openvpn/server.conf" ./scripts/openvpn-autoinstall.sh
+fi
 
 local_path="$(pwd)/${region}_aws_vpn.ovpn"
 
@@ -195,4 +201,10 @@ if [ -n "$Dflag" ] && [ -n "$rflag" ] && [ -n "$kflag" ]  ; then
     echo -e "\n${green}No keypairs were deleted."
   fi
 fi
+
+if [ -f ./scripts/openvpn-autoinstall.sh.bak ]; then
+  cp ./scripts/openvpn-autoinstall.sh.bak ./scripts/openvpn-autoinstall.sh
+  rm -f ./scripts/openvpn-autoinstall.sh.bak
+fi
+
 tput sgr0 
