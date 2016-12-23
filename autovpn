@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Variable deceleration
 scp_options=(-o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 -o ConnectTimeout=30 -o "UserKnownHostsFile /dev/null")
 user='ubuntu'
 local_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/scripts/openvpn-autoinstall.sh"
@@ -7,13 +8,14 @@ remote_script="\$HOME/openvpn-autoinstall.sh"
 run_script="sudo bash ./openvpn-autoinstall.sh"
 remote_path="\$HOME/aws_vpn.ovpn"
 
+#Terminal colors
 gray='\033[0m'
 green='\033[00;32m'
 red='\033[01;31m'
 white='\033[01;37m'
 yellow='\033[00;33m'
 
-
+# function for help output
 function usage {
   # ---------------------------------------------------------------------------
 	echo -e "${white}DESCRIPTION:\n $gray        $(basename "$0") - AWS OpenVPN Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
@@ -42,15 +44,17 @@ function usage {
  $gray*** - Custom user might be need if using a custom ami."
 }
 
-
+#SSH
 sshcmd() {
   ssh "${scp_options[@]}" -t -t $@
 }
 
+#SCP
 scpcmd() {
   scp "${scp_options[@]}" $@
 }
 
+#Function for error handling
 bail ()
 {
 	echo -e "${red}Error code $1"
@@ -58,7 +62,18 @@ bail ()
 	exit 
 }
 
+#Removes temporary files and resets terminal colors
+cleanup ()
+{
+  if [ -f ./scripts/openvpn-autoinstall.sh.bak ]; then
+    cp ./scripts/openvpn-autoinstall.sh.bak ./scripts/openvpn-autoinstall.sh
+    rm -f ./scripts/openvpn-autoinstall.sh.bak
+  fi
+  tput sgr0 
+  exit
+} 
 
+#funtion to provide reason for failure
 failed ()
 {
   if [ "$1" == "1" ]; then 
@@ -72,6 +87,7 @@ failed ()
   exit 
 }
 
+#Parse and validate flags
 if ( ! getopts "CDGSTyk:a:hmr:i:u:z:" opt); then
 	usage;
 	exit 1;
@@ -124,7 +140,7 @@ fi
 
 local_path="$(pwd)/${region}_aws_vpn.ovpn"
 
-
+#auto confirm delete when prompted
 confirm ()
 {
   if [[ -n "$yflag" ]]; then
@@ -134,7 +150,7 @@ confirm ()
   fi
 }
 
-
+#Create ec2 instance
 if [ -n "$Cflag" ] && [ -n "$rflag" ] && [ -n "$kflag"  ] ; then
   echo "Creating ec2 instance in $region. This can take some time..."
   instance_ip=$(python ./scripts/create_ec2.py "$keyname" "$instance_type" "$region" "$ami")
@@ -155,6 +171,7 @@ if [ -n "$Cflag" ] && [ -n "$rflag" ] && [ -n "$kflag"  ] ; then
   echo -e "${green}OpenVPN config file is located at $(pwd)"
 fi 
 
+#Generate Keypair
 if [ -n "$Gflag" ] && [ -n "$rflag" ] ; then
   keypath=$(pwd)
   if [ ! -f "$keypath/${region}_vpnkey.pem" ]; then
@@ -173,11 +190,13 @@ if [ -n "$Gflag" ] && [ -n "$rflag" ] ; then
   echo -e "${green}Use ${region}_vpnkey as keyname to create endpoint."
 fi 
 
+#Get status
 if [ -n "$Sflag" ] && [ -n "$rflag" ]  ; then
   get_status=$(python ./scripts/get_status.py "$region")
   echo -e "${green}Instances running in ${region}\n ${get_status}"
 fi  
 
+#Terminate ec2 instance
 if [ -n "$Tflag" ] && [ -n "$rflag" ] && [ -n "$zflag" ]  ; then
    echo -e "${yellow}WARNING: instance ${term_ids} in ${region} will be terminated. This is not reversible"
    confirm
@@ -190,6 +209,7 @@ if [ -n "$Tflag" ] && [ -n "$rflag" ] && [ -n "$zflag" ]  ; then
   fi
 fi 
 
+#Delete keypair fromw AWS
 if [ -n "$Dflag" ] && [ -n "$rflag" ] && [ -n "$kflag" ]  ; then
    echo -e "${yellow}WARNING: Keypair ${keyname} in ${region} will be deleted. This is not reversible"
    confirm
@@ -202,9 +222,5 @@ if [ -n "$Dflag" ] && [ -n "$rflag" ] && [ -n "$kflag" ]  ; then
   fi
 fi
 
-if [ -f ./scripts/openvpn-autoinstall.sh.bak ]; then
-  cp ./scripts/openvpn-autoinstall.sh.bak ./scripts/openvpn-autoinstall.sh
-  rm -f ./scripts/openvpn-autoinstall.sh.bak
-fi
-
-tput sgr0 
+#call cleanup Function
+cleanup 
