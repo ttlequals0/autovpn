@@ -40,7 +40,7 @@ USAGE:
 EXAMPLES:
   Create OpenVPN endpoint:
 	autovpn -C -r us-east-1 -k macbook
-  Generate keypar in a region.
+  Generate keypair in a region.
 	autovpn -G -r us-east-1
   Get running instances
 	autovpn -S -r us-east-1
