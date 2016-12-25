@@ -55,3 +55,26 @@ NOTES:
         \*** - Custom user might be need if using a custom ami.
 
 </pre></code>
+
+
+# One time setup   
+
+## setup AWS 
+   * setup aws-cli per platform instructions.
+   * `aws configure` to setup the user credential
+   
+## download source   
+   * `git config --global core.autocrlf true` - ensure turn the crlf conversion off, before downloading the source code, 
+   * `git clone https://github.com/DerekLiang/autovpn.git`
+
+## start the vpn server
+   * `./autovpn -G -r us-east-1`
+   * `ssh-agent bash`
+   * `ssh-add us-east-1_vpnkey.pem`
+   * `./autovpn -C -r us-east-1 -k us-east-1_vpnkey -i m3.medium`
+
+## start the openvpn 
+   * if everything is working, you should have the file `us-east-1_aws_vpn.ovpn` in your current folder .
+   * on Windows, DNS server resultion problem can be resolved by comment the `setenv opt block-outside-dns` out which might cause DNS leak.
+
+   
