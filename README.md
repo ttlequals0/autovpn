@@ -62,23 +62,29 @@ NOTES:
 
 # One Time Setup   
 
-## setup AWS 
+## Setup AWS 
   * Setup aws-cli per platform instructions. [See Here](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html)
   * `aws configure` to setup the user credential
    
-## download source   
+## Download Source   
   * `git config --global core.autocrlf true` - ensure turn the crlf conversion off, before downloading the source code, 
   * `git clone https://github.com/ttlequals0/autovpn.git`
 
-## start the vpn server
-  * `./autovpn -G -r \<region\>`
+## Deploy the OpenVPN Endpoint in region of Choice
+  * `./autovpn -G -r <region>`
   * `ssh-agent bash`
-  * `ssh-add \<region\>_vpnkey.pem`
-  * `./autovpn -C -r \<region\> -k \<region\>_vpnkey `
+  * `ssh-add <region>_vpnkey.pem`
+  * `./autovpn -C -r <region> -k <region>_vpnkey `
 
-## start the openvpn 
-  * If everything is working, you should have the file `\<region\>_aws_vpn.ovpn` in your current folder.
-  * Import the `\<region\>_aws_vpn.ovpn` into your VPN client of choice.
+## Start OpenVPN 
+  * If everything is working, you should have the file `<region>_aws_vpn.ovpn` in your current folder.
+  * Import the `<region>_aws_vpn.ovpn` into your VPN client of choice and connect.
   * On Windows, DNS leak issue has been taken care of within the config
+
+# ToDo:
+  * Continue to update documentation
+  * Add deletion of VPC if it  is no longer in use.
+  * Add ability to specify custom port
+  * Add ability to create more client configs for one endpoint.
 
 
