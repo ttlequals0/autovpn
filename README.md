@@ -1,4 +1,4 @@
-# OVERVIEW
+# Overview
 
 Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To create a VPN endpoint is done with a single command takes ~3 minutes. It will create a VPC with proper security groups. It spins up a tagged ec2  instance  and configures OpenVPN software. Once instance is configured an OpenVPN configuration file is downloaded and ready to use. There is also functionality to see which instances are running in which region and ability to terminate the instance when done. Additional functionality includes specifying instance type, generate ssh keypairs, specify custom ami,  change login user and more to come. 
 
@@ -55,3 +55,30 @@ NOTES:
         \*** - Custom user might be need if using a custom ami.
 
 </pre></code>
+
+# Use Case
+  * Create on demand OpenVPN Endpoints in AWS that can easily be destroyed after done
+    only pay for what you use.
+
+# One Time Setup   
+
+## setup AWS 
+  * Setup aws-cli per platform instructions. [See Here](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html)
+  * `aws configure` to setup the user credential
+   
+## download source   
+  * `git config --global core.autocrlf true` - ensure turn the crlf conversion off, before downloading the source code, 
+  * `git clone https://github.com/ttlequals0/autovpn.git`
+
+## start the vpn server
+  * `./autovpn -G -r \<region\>`
+  * `ssh-agent bash`
+  * `ssh-add \<region\>_vpnkey.pem`
+  * `./autovpn -C -r \<region\> -k \<region\>_vpnkey `
+
+## start the openvpn 
+  * If everything is working, you should have the file `\<region\>_aws_vpn.ovpn` in your current folder.
+  * Import the `\<region\>_aws_vpn.ovpn` into your VPN client of choice.
+  * On Windows, DNS leak issue has been taken care of within the config
+
+
