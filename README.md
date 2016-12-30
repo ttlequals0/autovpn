@@ -70,7 +70,7 @@ NOTES:
   * `git config --global core.autocrlf true` - ensure turn the crlf conversion off, before downloading the source code, 
   * `git clone https://github.com/ttlequals0/autovpn.git`
 
-## Deploy the OpenVPN Endpoint in region of Choice
+## Deploy the OpenVPN Endpoint in Region of Choice
   * `./autovpn -G -r <region>`
   * `ssh-agent bash`
   * `ssh-add <region>_vpnkey.pem`
@@ -86,5 +86,6 @@ NOTES:
   * Add deletion of VPC if it  is no longer in use.
   * Add ability to specify custom port
   * Add ability to create more client configs for one endpoint.
+  * Pull Requests are welcome.
 
 
