@@ -5,12 +5,13 @@ Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To
 [![asciicast](https://asciinema.org/a/40608.png)](https://asciinema.org/a/40608)
 
 Dependencies:
+
 0. Install boto by running: 
-	<pre><code>pip install boto</pre></code>
+	<pre><addr>pip install boto</pre></addr>
 1. Install paramiko by running: 
-	<pre><code>pip install paramiko</pre></code>
+	<pre><addr>pip install paramiko</pre></addr>
 2. Ensure that you have an AWS .credentials file by running: 
-	<pre><code>nano ~/.aws/credentials</pre></code>
+	<pre><addr>nano ~/.aws/credentials</pre></addr>
 	Then type in the following and add your keys (remove <>):
 	<pre><code>
 	[Credentials]
@@ -21,13 +22,14 @@ Dependencies:
 
 
 Installation:
-0. Ensure dependencies are all installed.
-1. Clone repo to system.
-2. Execute autovpn with -C -k and -r options to deploy to AWS
+
+1. Ensure dependencies are all installed.
+2. Clone repo to system.
+3. Execute autovpn with -C -k and -r options to deploy to AWS
 	`./autovpn -C -r us-east-1 -k us-east-1_vpnkey`
-3. OpenVPN config files are downloaded to current working directory.
-4. Import the OpenVPN config file and connect:
-	<pre><code>sudo openvpn us-east-1_aws_vpn.ovpn</pre></code>
+4. OpenVPN config files are downloaded to current working directory.
+5. Import the OpenVPN config file and connect:
+	<pre><addr>sudo openvpn us-east-1_aws_vpn.ovpn</pre></addr>
 
 <pre><code>
 DESCRIPTION:
@@ -65,11 +67,9 @@ EXAMPLES:
   Using custom options
     autovpn -C -r us-east-1 -k us-east-1_vpnkey -a ami-fce3c696 -u ec2_user -i m3.medium
 NOTES:
-        \* - Customs ami may be needed if changing instance type.
-       	\** - In reality any instance size can be given but the t2.micro is more than
-       	 enough.
+        \* - Custom AMI may be needed if changing instance type.
+        \** - Any instance size can be given but the t2.micro is more than enough.
         \*** - Custom user might be need if using a custom ami.
-	\**** - The AWS IAM user (used in ~/.aws/credentials file) must have EC2 or Administrator permissions set.
-	\***** - You'll need to install the OpenVPN client on your system if you plan on connecting to VPN with it.
+	\**** - AWS IAM user must have EC2 or Administrator permissions set.
 
 </pre></code>
