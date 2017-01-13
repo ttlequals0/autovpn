@@ -70,6 +70,6 @@ NOTES:
         \* - Custom AMI may be needed if changing instance type.
         \** - Any instance size can be given but the t2.micro is more than enough.
         \*** - Custom user might be need if using a custom ami.
-	      \**** - AWS IAM user must have EC2 or Administrator permissions set.
+	    \**** - AWS IAM user must have EC2 or Administrator permissions set.
 
 </pre></code>
