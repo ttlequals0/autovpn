@@ -4,14 +4,30 @@ Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To
 
 [![asciicast](https://asciinema.org/a/40608.png)](https://asciinema.org/a/40608)
 
-Dependencies: boto and paramiko (python packages) and aws .credentials file on system
+Dependencies:
+0. Install boto by running: 
+	<pre><code>pip install boto</pre></code>
+1. Install paramiko by running: 
+	<pre><code>pip install paramiko</pre></code>
+2. Ensure that you have an AWS .credentials file by running: 
+	<pre><code>nano ~/.aws/credentials</pre></code>
+	Then type in the following and add your keys (remove <>):
+	<pre><code>
+	[Credentials]
+	aws_access_key_id = <your_access_key_here>
+	aws_secret_access_key = <your_secret_key_here>
+	</pre></code>
+3. Install OpenVPN client (if needed)
 
+
+Installation:
+0. Ensure dependencies are all installed.
 1. Clone repo to system.
 2. Execute autovpn with -C -k and -r options to deploy to AWS
-	`./autovpn -C -r us-east-1 -k macbook`
+	`./autovpn -C -r us-east-1 -k us-east-1_vpnkey`
 3. OpenVPN config files are downloaded to current working directory.
-4. Import the OpenVPN config file into VPN client.
-5. Connect to VPN.
+4. Import the OpenVPN config file and connect:
+	<pre><code>sudo openvpn us-east-1_aws_vpn.ovpn</pre></code>
 
 <pre><code>
 DESCRIPTION:
@@ -39,7 +55,7 @@ USAGE:
        -z    Specify instance id.
 EXAMPLES:
   Create OpenVPN endpoint:
-	autovpn -C -r us-east-1 -k macbook
+	autovpn -C -r us-east-1 -k us-east-1_vpnkey
   Generate keypair in a region.
 	autovpn -G -r us-east-1
   Get running instances
@@ -47,11 +63,13 @@ EXAMPLES:
   Terminate OpenVPN endpoint
 	autovpn -T -r us-east-1 -z i-b933e00c
   Using custom options
-    autovpn -C -r us-east-1 -k macbook -a ami-fce3c696 -u ec2_user -i m3.medium
+    autovpn -C -r us-east-1 -k us-east-1_vpnkey -a ami-fce3c696 -u ec2_user -i m3.medium
 NOTES:
         \* - Customs ami may be needed if changing instance type.
        	\** - In reality any instance size can be given but the t2.micro is more than
        	 enough.
         \*** - Custom user might be need if using a custom ami.
+	\**** - The AWS IAM user (used in ~/.aws/credentials file) must have EC2 or Administrator permissions set.
+	\***** - You'll need to install the OpenVPN client on your system if you plan on connecting to VPN with it.
 
 </pre></code>
