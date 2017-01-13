@@ -6,27 +6,27 @@ Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To
 
 Dependencies:
 
-0. Install boto by running: 
+1. Install boto by running: 
 	<pre><addr>pip install boto</pre></addr>
-1. Install paramiko by running: 
+2. Install paramiko by running: 
 	<pre><addr>pip install paramiko</pre></addr>
-2. Ensure that you have an AWS .credentials file by running: 
+3. Ensure that you have an AWS .credentials file by running: 
 	<pre><addr>nano ~/.aws/credentials</pre></addr>
-	Then type in the following and add your keys (remove <>):
+	Then type in the following and add your keys (remove parenthesis):
 	<pre><code>
 	[Credentials]
-	aws_access_key_id = <your_access_key_here>
-	aws_secret_access_key = <your_secret_key_here>
+	aws_access_key_id = (your_access_key_here)
+	aws_secret_access_key = (your_secret_key_here)
 	</pre></code>
-3. Install OpenVPN client (if needed)
+4. Install OpenVPN client (if needed)
 
 
 Installation:
 
 1. Ensure dependencies are all installed.
 2. Clone repo to system.
-3. Execute autovpn with -C -k and -r options to deploy to AWS
-	`./autovpn -C -r us-east-1 -k us-east-1_vpnkey`
+3. Execute autovpn with -C -k and -r options to deploy to AWS:
+	<pre><addr>./autovpn -C -r us-east-1 -k us-east-1_vpnkey</addr>
 4. OpenVPN config files are downloaded to current working directory.
 5. Import the OpenVPN config file and connect:
 	<pre><addr>sudo openvpn us-east-1_aws_vpn.ovpn</pre></addr>
@@ -70,6 +70,6 @@ NOTES:
         \* - Custom AMI may be needed if changing instance type.
         \** - Any instance size can be given but the t2.micro is more than enough.
         \*** - Custom user might be need if using a custom ami.
-	\**** - AWS IAM user must have EC2 or Administrator permissions set.
+	      \**** - AWS IAM user must have EC2 or Administrator permissions set.
 
 </pre></code>
