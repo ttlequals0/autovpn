@@ -18,7 +18,7 @@ yellow='\033[00;33m'
 # function for help output
 function usage {
   # ---------------------------------------------------------------------------
-	echo -e "${white}DESCRIPTION:\n $gray        $(basename "$0") - AWS OpenVPN Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
+	echo -e "${white}DESCRIPTION:\n $gray        $(basename "$0") - On Demand AWS OpenVPN Endpoint Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
   echo -e "${white}USAGE:\n $gray ACTION\t [OPTIONS] 
   $white-C$gray\t Create VPN endpoint.
   $white-D$gray\t Delete keypair from region.  
@@ -178,7 +178,7 @@ if [ -n "$Gflag" ] && [ -n "$rflag" ] ; then
     echo -e  "${white}Generating new keypair for $region."
     generate_key=$(python ./scripts/keygen.py "${region}_vpnkey" "$region" "$keypath")
     [[ $generate_key == "Success" ]] || failed 1
-    echo -e "${green}${region}_vpnkey has been created"
+    echo -e "${green}${region}_vpnkey has been created successfully."
     ssh-add -l &>/dev/null
     if [ "$?" == 2 ]; then
       eval $(ssh-agent -s) &>/dev/null
@@ -187,7 +187,7 @@ if [ -n "$Gflag" ] && [ -n "$rflag" ] ; then
   elif [ -f "$keypath/${region}_vpnkey.pem" ]; then
     echo -e "${yellow}A Keypair for this region already exists."
   fi
-  echo -e "${green}Use ${region}_vpnkey as keyname to create endpoint."
+  echo -e "${green}Use ${region}_vpnkey as keyname to create endpoint.\nNote you may need to add ${region}_vpnkey to ssh-agent "
 fi 
 
 #Get status

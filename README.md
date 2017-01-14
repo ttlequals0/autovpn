@@ -1,6 +1,10 @@
-# OVERVIEW
+# Overview
 
 Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To create a VPN endpoint is done with a single command takes ~3 minutes. It will create a VPC with proper security groups. It spins up a tagged ec2  instance  and configures OpenVPN software. Once instance is configured an OpenVPN configuration file is downloaded and ready to use. There is also functionality to see which instances are running in which region and ability to terminate the instance when done. Additional functionality includes specifying instance type, generate ssh keypairs, specify custom ami,  change login user and more to come. 
+
+Use Case
+  * Create on demand OpenVPN Endpoints in AWS that can easily be destroyed after done
+    only pay for what you use.
 
 [![asciicast](https://asciinema.org/a/40608.png)](https://asciinema.org/a/40608)
 
@@ -11,7 +15,7 @@ Dependencies:
 2. Install paramiko by running: 
 	<pre><addr>pip install paramiko</pre></addr>
 3. Ensure that you have an AWS .credentials file by running: 
-	<pre><addr>nano ~/.aws/credentials</pre></addr>
+	<pre><addr>vi ~/.aws/credentials</pre></addr>
 	Then type in the following and add your keys (remove parenthesis):
 	<pre><code>
 	[Credentials]
@@ -25,11 +29,12 @@ Installation:
 
 1. Ensure dependencies are all installed.
 2. Clone repo to system.
+  <pre><code>git clone https://github.com/ttlequals0/autovpn.git</code></pre>
 3. Execute autovpn with -C -k and -r options to deploy to AWS:
 	<pre><addr>./autovpn -C -r us-east-1 -k us-east-1_vpnkey</addr>
 4. OpenVPN config files are downloaded to current working directory.
 5. Import the OpenVPN config file and connect:
-	<pre><addr>sudo openvpn us-east-1_aws_vpn.ovpn</pre></addr>
+	<pre><addr>sudo openvpn us-east-1_aws_vpn.ovpn</pre></addr>  
 
 <pre><code>
 DESCRIPTION:
@@ -73,3 +78,10 @@ NOTES:
 	    \**** - AWS IAM user must have EC2 or Administrator permissions set.
 
 </pre></code>
+
+ToDo:
+  * Continue to update documentation
+  * Add deletion of VPC if it  is no longer in use.
+  * Add ability to specify custom port
+  * Add ability to create more client configs for one endpoint.
+  * Pull Requests are welcome.
