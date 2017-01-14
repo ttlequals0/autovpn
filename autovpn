@@ -41,7 +41,7 @@ function usage {
   \tautovpn -C -r us-east-1 -k us-east-1_vpnkey -a ami-fce3c696 -u ec2_user -i m3.medium"
   echo -e "${white}NOTES:\n $gray* - Customs ami may be needed if changing instance type.\n $gray** - In reality any\
   instance size can be given but the t2.micro\n is more than enough.\n\
- $gray*** - Custom user might be need if using a custom ami."
+ $gray*** - Custom user might be need if using a custom ami.\n **** - AWS IAM user must have EC2 or Administrator permissions set."
 }
 
 #SSH
