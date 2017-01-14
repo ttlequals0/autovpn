@@ -2,12 +2,12 @@
 
 Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To create a VPN endpoint is done with a single command takes ~3 minutes. It will create a VPC with proper security groups. It spins up a tagged ec2  instance  and configures OpenVPN software. Once instance is configured an OpenVPN configuration file is downloaded and ready to use. There is also functionality to see which instances are running in which region and ability to terminate the instance when done. Additional functionality includes specifying instance type, generate ssh keypairs, specify custom ami,  change login user and more to come. 
 
+[![asciicast](https://asciinema.org/a/40608.png)](https://asciinema.org/a/40608)
+
 Use Case
   * Create on demand OpenVPN Endpoints in AWS that can easily be destroyed after done
     only pay for what you use.
-
-[![asciicast](https://asciinema.org/a/40608.png)](https://asciinema.org/a/40608)
-
+    
 Dependencies:
 
 1. Install boto by running: 
@@ -38,7 +38,7 @@ Installation:
 
 <pre><code>
 DESCRIPTION:
-   autovpn - AWS OpenVPN Deployment Tool.
+   autovpn - On Demand AWS OpenVPN Endpoint Deployment Tool.AWS OpenVPN Deployment Tool.
 	Project found at https://github.com/ttlequals0/autovpn
 USAGE:
         ACTION	 [OPTIONS]
