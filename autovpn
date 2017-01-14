@@ -18,7 +18,7 @@ yellow='\033[00;33m'
 # function for help output
 function usage {
   # ---------------------------------------------------------------------------
-	echo -e "${white}DESCRIPTION:\n $gray        $(basename "$0") - AWS OpenVPN Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
+	echo -e "${white}DESCRIPTION:\n $gray        $(basename "$0") - On Demand AWS OpenVPN Endpoint Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
   echo -e "${white}USAGE:\n $gray ACTION\t [OPTIONS] 
   $white-C$gray\t Create VPN endpoint.
   $white-D$gray\t Delete keypair from region.  
@@ -35,10 +35,10 @@ function usage {
   $white-u$gray\t Specify custom ssh user.***
   $white-y$gray\t Skip confirmations
   $white-z$gray\t Specify instance id." 
-  echo -e "${white}EXAMPLES:\n $gray Create OpenVPN endpoint: \n\tautovpn -C -r us-east-1 -k macbook\n\
+  echo -e "${white}EXAMPLES:\n $gray Create OpenVPN endpoint: \n\tautovpn -C -r us-east-1 -k us-east-1_vpnkey\n\
   Generate keypar in a region.\n\tautovpn -G -r us-east-1\n  Get running instances\n\tautovpn -S -r us-west-1\n\
   Terminate OpenVPN endpoint\n\tautovpn -T -r us-west-1 -z i-b933e00c\n  Using custom options\n\
-  \tautovpn -C -r us-east-1 -k macbook -a ami-fce3c696 -u ec2_user -i m3.medium"
+  \tautovpn -C -r us-east-1 -k us-east-1_vpnkey -a ami-fce3c696 -u ec2_user -i m3.medium"
   echo -e "${white}NOTES:\n $gray* - Customs ami may be needed if changing instance type.\n $gray** - In reality any\
   instance size can be given but the t2.micro\n is more than enough.\n\
  $gray*** - Custom user might be need if using a custom ami."
@@ -178,7 +178,7 @@ if [ -n "$Gflag" ] && [ -n "$rflag" ] ; then
     echo -e  "${white}Generating new keypair for $region."
     generate_key=$(python ./scripts/keygen.py "${region}_vpnkey" "$region" "$keypath")
     [[ $generate_key == "Success" ]] || failed 1
-    echo -e "${green}${region}_vpnkey has been created"
+    echo -e "${green}${region}_vpnkey has been created successfully."
     ssh-add -l &>/dev/null
     if [ "$?" == 2 ]; then
       eval $(ssh-agent -s) &>/dev/null
@@ -187,7 +187,7 @@ if [ -n "$Gflag" ] && [ -n "$rflag" ] ; then
   elif [ -f "$keypath/${region}_vpnkey.pem" ]; then
     echo -e "${yellow}A Keypair for this region already exists."
   fi
-  echo -e "${green}Use ${region}_vpnkey as keyname to create endpoint."
+  echo -e "${green}Use ${region}_vpnkey as keyname to create endpoint.\nNote you may need to add ${region}_vpnkey to ssh-agent "
 fi 
 
 #Get status

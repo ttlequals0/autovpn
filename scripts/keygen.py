@@ -11,7 +11,6 @@ key_dir=sys.argv[3]
 conn_region = boto.ec2.connect_to_region(region)
 
 def generate_key(key_name=keyname,
-                    key_extension='.pem',
                     key_dir=key_dir,
                     ssh_passwd=None):
 
