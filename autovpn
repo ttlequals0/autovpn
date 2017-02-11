@@ -32,6 +32,7 @@ function usage {
   $white-m$gray\t Allow multiple connections to same endpoint.
   $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-east-2 us-west-1 us-west-2 eu-west-1 eu-west-2\n\t\
  eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
+  $white-p$gray\t Specify custom OpenVPN port.
   $white-u$gray\t Specify custom ssh user.***
   $white-y$gray\t Skip confirmations
   $white-z$gray\t Specify instance id." 
@@ -62,13 +63,28 @@ bail ()
 	exit 
 }
 
+#create backup of files
+backup ()
+{
+cp ./scripts/$1{,.bak}
+}
+
+#check if file exists before modifications 
+filecheck ()
+{
+  if [[ -f ./scripts/$1.bak ]]; then
+    echo 0
+  else
+    backup "$1" 
+    echo 0
+  fi
+}
+
 #Removes temporary files and resets terminal colors
 cleanup ()
 {
-  if [ -f ./scripts/openvpn-autoinstall.sh.bak ]; then
-    cp ./scripts/openvpn-autoinstall.sh.bak ./scripts/openvpn-autoinstall.sh
-    rm -f ./scripts/openvpn-autoinstall.sh.bak
-  fi
+  find ./scripts -type f  -iname "*.bak" -exec bash -c 'git checkout ./scripts/$(basename -s .bak "$1")' _ "{}" \;
+  rm ./scripts/*.bak
   tput sgr0 
   exit
 } 
@@ -83,17 +99,17 @@ failed ()
   elif [ "$1" == "3" ]; then 
   echo -e "${red}\nFailed to delete keypair"  
   fi
-  tput sgr0 
+  cleanup
   exit 
 }
 
 #Parse and validate flags
-if ( ! getopts "CDGSTyk:a:hmr:i:u:z:" opt); then
+if ( ! getopts "CDGSTyk:a:hmr:i:p:u:z:" opt); then
 	usage;
 	exit 1;
 fi
 
-while getopts ":CDGSTyk:a:hmr:i:u:z:" opt; do
+while getopts ":CDGSTyk:a:hmr:i:p:u:z:" opt; do
   case $opt in
     C) Cflag="defined" ;;
     D) Dflag="defined" ;;        
@@ -122,6 +138,7 @@ while getopts ":CDGSTyk:a:hmr:i:u:z:" opt; do
       elif [ "$OPTARG" == "ca-central-1" ]; then region="ca-central-1"; ami="ami-0651e362"
       else echo "Not a valid region"; bail 3; fi                                               
       ;; 
+    p) vpn_port="$OPTARG" ;;
     u) custom_user="$OPTARG" ;;       
     y) yflag="defined" ;;
     z) zflag="defined"; term_ids="$OPTARG" ;;     
@@ -133,8 +150,17 @@ done
 if [[ -z "$instance_type" ]]; then 	instance_type="t2.micro"; fi
 if [[ -n "$custom_ami" ]]; then  ami="$custom_ami"; fi
 if [[ -n "$custom_user" ]]; then  user="$custom_user"; fi
+if [[ -z "$vpn_port"  ]]; then  
+  vpn_port="1194"
+else
+  pcheck=$(filecheck openvpn-autoinstall.sh)
+  [[ $pcheck == "0" ]] 
+  sed -i "s/1194/$vpn_port/g" ./scripts/openvpn-autoinstall.sh
+fi 
+
 if [[ -n "$mflag" ]] ; then
-  cp ./scripts/openvpn-autoinstall.sh{,.bak}
+  mcheck=$(filecheck openvpn-autoinstall.sh)
+  [[ $mcheck == "0" ]] 
   sed -i "123i echo 'duplicate-cn' >> /etc/openvpn/server.conf" ./scripts/openvpn-autoinstall.sh
 fi
 
@@ -153,7 +179,7 @@ confirm ()
 #Create ec2 instance
 if [ -n "$Cflag" ] && [ -n "$rflag" ] && [ -n "$kflag"  ] ; then
   echo "Creating ec2 instance in $region. This can take some time..."
-  instance_ip=$(python2 ./scripts/create_ec2.py "$keyname" "$instance_type" "$region" "$ami")
+  instance_ip=$(python2 ./scripts/create_ec2.py "$keyname" "$instance_type" "$region" "$ami" "$vpn_port")
   [[ $instance_ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] || bail 4
   echo -e "${green}Instance has been created $instance_ip"
   echo -e "${yellow}Giving new instance some time to fully boot up..."
