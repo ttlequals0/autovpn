@@ -32,7 +32,7 @@ function usage {
   $white-m$gray\t Allow multiple connections to same endpoint.
   $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-east-2 us-west-1 us-west-2 eu-west-1 eu-west-2\n\t\
  eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
-  $white-p$gray\t Specify custom OpenVPN port.
+  $white-p$gray\t Specify custom OpenVPN UDP port.
   $white-u$gray\t Specify custom ssh user.***
   $white-y$gray\t Skip confirmations
   $white-z$gray\t Specify instance id." 

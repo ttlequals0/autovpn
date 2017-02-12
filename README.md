@@ -2,7 +2,7 @@
 
 Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To create a VPN endpoint is done with a single command takes ~3 minutes. It will create a VPC with proper security groups. It spins up a tagged ec2  instance  and configures OpenVPN software. Once instance is configured an OpenVPN configuration file is downloaded and ready to use. There is also functionality to see which instances are running in which region and ability to terminate the instance when done. Additional functionality includes specifying instance type, generate ssh keypairs, specify custom ami,  change login user and more to come. 
 
-[![asciicast](https://asciinema.org/a/40608.png)](https://asciinema.org/a/40608)
+[![asciicast](https://asciinema.org/a/102869.png)](https://asciinema.org/a/102869)
 
 Use Case
   * Create on demand OpenVPN Endpoints in AWS that can easily be destroyed after done
@@ -57,6 +57,7 @@ USAGE:
 		     us-east-1 us-west-1 us-east-2 us-west-2 eu-west-1 eu-west-2 
 		     eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2 
 		     ap-southeast-2 sa-east-1 ca-central-1
+       -p    Specify custom OpenVPN UDP port
        -u    Specify custom ssh user.***
        -y    Skip confirmations
        -z    Specify instance id.
@@ -81,8 +82,7 @@ NOTES:
 
 ToDo:
   * Continue to update documentation
-  * Add deletion of VPC if it  is no longer in use.
-  * Add ability to specify custom port
+  * Add deletion of Securoty Group if it is no longer in use.
   * Add ability to create more client configs for one endpoint.
   * Pull Requests are welcome.
 
