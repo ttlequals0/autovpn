@@ -30,11 +30,14 @@ Installation:
 1. Ensure dependencies are all installed.
 2. Clone repo to system.
   <pre><code>git clone https://github.com/ttlequals0/autovpn.git</code></pre>
-3. Execute autovpn with -C -k and -r options to deploy to AWS:
-	<pre><addr>./autovpn -C -r us-east-1 -k us-east-1_vpnkey</addr>
+3. To create SSH keypair execute autovpn with -G and -r options for AWS region of choice. (optional)
+   NOTE: Make sure to add new key to your ssh-agent.
+	<pre><addr>./autovpn -G -r us-east-1</addr></pre>
+4. Execute autovpn with -C -k and -r options to deploy to AWS:
+	<pre><addr>./autovpn -C -r us-east-1 -k us-east-1_vpnkey</addr></pre>
 4. OpenVPN config files are downloaded to current working directory.
 5. Import the OpenVPN config file and connect:
-	<pre><addr>sudo openvpn us-east-1_aws_vpn.ovpn</pre></addr>  
+	<pre><addr>sudo openvpn us-east-1_aws_vpn.ovpn</pre></addr></pre>  
 
 <pre><code>
 DESCRIPTION:
