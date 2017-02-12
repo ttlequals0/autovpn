@@ -131,6 +131,7 @@ persist-tun
 status openvpn-status.log
 verb 3
 crl-verify crl.pem" >> /etc/openvpn/server.conf
+echo 'mssfix 1200' >> /etc/openvpn/server.conf
 
 # Enable net.ipv4.ip_forward for the system
 sed -i '/\<net.ipv4.ip_forward\>/c\net.ipv4.ip_forward=1' /etc/sysctl.conf
