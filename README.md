@@ -30,7 +30,7 @@ Installation:
 1. Ensure dependencies are all installed.
 2. Clone repo to system.
   <pre><code>git clone https://github.com/ttlequals0/autovpn.git</code></pre>
-3. To create SSH keypair execute autovpn with -G and -r options for AWS region of choice. (optional)
+3. To create SSH keypair execute autovpn with -G and -r options for AWS region of choice. (optional)	
    NOTE: Make sure to add new key to your ssh-agent.
 	<pre><addr>./autovpn -G -r us-east-1</addr></pre>
 4. Execute autovpn with -C -k and -r options to deploy to AWS:
