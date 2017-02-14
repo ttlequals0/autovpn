@@ -41,7 +41,7 @@ Installation:
 
 <pre><code>
 DESCRIPTION:
-   autovpn - On Demand AWS OpenVPN Endpoint Deployment Tool.AWS OpenVPN Deployment Tool.
+    autovpn - On Demand AWS OpenVPN Endpoint Deployment Tool.
 	Project found at https://github.com/ttlequals0/autovpn
 USAGE:
         ACTION	 [OPTIONS]
