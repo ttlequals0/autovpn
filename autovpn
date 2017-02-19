@@ -26,7 +26,7 @@ function usage {
   $white-S$gray\t Get all running instances in a given region.
   $white-T$gray\t Terminate a OpenVPN endpoint.
   $white-a$gray\t Specify a custom ami.*
-  $white-d$gray\t Specify a custom DNS server.
+  $white-d$gray\t Specify a custom DNS server. (ex. 4.2.2.1)
   $white-h$gray\t Displays this message.
   $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t t2.nano t2.micro t2.small t2.medium t2.large **
   $white-k$gray\t Specify the name of AWS keypair.
