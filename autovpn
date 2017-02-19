@@ -26,6 +26,7 @@ function usage {
   $white-S$gray\t Get all running instances in a given region.
   $white-T$gray\t Terminate a OpenVPN endpoint.
   $white-a$gray\t Specify a custom ami.*
+  $white-d$gray\t Specify a custom DNS server.
   $white-h$gray\t Displays this message.
   $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t t2.nano t2.micro t2.small t2.medium t2.large **
   $white-k$gray\t Specify the name of AWS keypair.
@@ -104,19 +105,20 @@ failed ()
 }
 
 #Parse and validate flags
-if ( ! getopts "CDGSTyk:a:hmr:i:p:u:z:" opt); then
+if ( ! getopts "CDGSTyk:a:d:hmr:i:p:u:z:" opt); then
 	usage;
 	exit 1;
 fi
 
-while getopts ":CDGSTyk:a:hmr:i:p:u:z:" opt; do
+while getopts ":CDGSTyk:a:d:hmr:i:p:u:z:" opt; do
   case $opt in
     C) Cflag="defined" ;;
     D) Dflag="defined" ;;        
     G) Gflag="defined" ;;
     S) Sflag="defined" ;; 
     T) Tflag="defined" ;;
-    a) custom_ami="$OPTARG" ;;                  
+    a) custom_ami="$OPTARG" ;;
+    d) custom_DNS="$OPTARG" ;;               
     h) usage && exit 0 ;; 
     i) instance_type="$OPTARG" ;;       	
     k) kflag="defined"; keyname="$OPTARG" ;;
@@ -150,14 +152,19 @@ done
 if [[ -z "$instance_type" ]]; then 	instance_type="t2.micro"; fi
 if [[ -n "$custom_ami" ]]; then  ami="$custom_ami"; fi
 if [[ -n "$custom_user" ]]; then  user="$custom_user"; fi
+if [[ -n "$custom_DNS" ]]; then 
+  dcheck=$(filecheck openvpn-autoinstall.sh)
+  [[ $dcheck == "0" ]]
+  sed -i '121,122d' ./scripts/openvpn-autoinstall.sh
+  sed -i "121i echo 'push \"dhcp-option DNS $custom_DNS\"' >> /etc/openvpn/server.conf" ./scripts/openvpn-autoinstall.sh
+fi
 if [[ -z "$vpn_port"  ]]; then  
   vpn_port="1194"
 else
   pcheck=$(filecheck openvpn-autoinstall.sh)
   [[ $pcheck == "0" ]] 
-  sed -i "s/1194/$vpn_port/g" ./scripts/openvpn-autoinstall.sh
+  sed -i "s/1194/$vpn_port/g"  ./scripts/openvpn-autoinstall.sh
 fi 
-
 if [[ -n "$mflag" ]] ; then
   mcheck=$(filecheck openvpn-autoinstall.sh)
   [[ $mcheck == "0" ]] 

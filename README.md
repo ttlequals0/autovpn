@@ -51,6 +51,7 @@ USAGE:
        -S    Get all running instances in a given region.
        -T    Terminate a OpenVPN endpoint.
        -a    Specify custom ami.*
+       -d    Specify custom DNS server.
        -h    Displays this message.
        -i    AWS Instance type (Optional, Default is t2.micro)
 		     t2.nano t2.micro t2.small t2.medium t2.large.**
