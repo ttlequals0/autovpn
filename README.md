@@ -77,10 +77,10 @@ EXAMPLES:
   Using custom options
     autovpn -C -r us-east-1 -k us-east-1_vpnkey -a ami-fce3c696 -u ec2_user -i m3.medium
 NOTES:
-        \* - Custom AMI may be needed if changing instance type.
-        \** - Any instance size can be given but the t2.micro is more than enough.
-        \*** - Custom user might be need if using a custom ami.
-	\**** - AWS IAM user must have EC2 or Administrator permissions set.
+        * - Custom AMI may be needed if changing instance type.
+        ** - Any instance size can be given but the t2.micro is more than enough.
+        *** - Custom user might be need if using a custom ami.
+	**** - AWS IAM user must have EC2 or Administrator permissions set.
 
 </pre></code>
 
