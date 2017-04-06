@@ -1,6 +1,6 @@
 # Overview
 
-Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To create a VPN endpoint is done with a single command takes ~3 minutes. It will create a VPC with proper security groups. It spins up a tagged ec2  instance  and configures OpenVPN software. Once instance is configured an OpenVPN configuration file is downloaded and ready to use. There is also functionality to see which instances are running in which region and ability to terminate the instance when done. Additional functionality includes specifying instance type, generate ssh keypairs, specify custom ami,  change login user and more to come. 
+Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To create a VPN endpoint is done with a single command takes ~3 minutes. It will create the proper security groups. It spins up a tagged ec2  instance  and configures OpenVPN software. Once instance is configured an OpenVPN configuration file is downloaded and ready to use. There is also functionality to see which instances are running in which region and ability to terminate the instance when done. Additional functionality includes specifying instance type, generate ssh keypairs, specify custom ami,  change login user and more to come. 
 
 [![asciicast](https://asciinema.org/a/102869.png)](https://asciinema.org/a/102869)
 
@@ -18,7 +18,7 @@ Dependencies:
 	<pre><addr>vi ~/.aws/credentials</pre></addr>
 	Then type in the following and add your keys (remove parenthesis):
 	<pre><code>
-	[Credentials]
+	[default]
 	aws_access_key_id = (your_access_key_here)
 	aws_secret_access_key = (your_secret_key_here)
 	</pre></code>
