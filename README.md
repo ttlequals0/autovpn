@@ -54,13 +54,13 @@ USAGE:
        -d    Specify custom DNS server. (ex. 4.2.2.1)
        -h    Displays this message.
        -i    AWS Instance type (Optional, Default is t2.micro)
-		     t2.nano t2.micro t2.small t2.medium t2.large.**
+	     t2.nano t2.micro t2.small t2.medium t2.large.**
        -k    Specify the name of AWS keypair (Required)
        -m    Allow multiple connections to same endpoint.
        -r    Specify AWS Region (Required)
-		     us-east-1 us-west-1 us-east-2 us-west-2 eu-west-1 eu-west-2 
-		     eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2 
-		     ap-southeast-2 sa-east-1 ca-central-1
+	     us-east-1 us-west-1 us-east-2 us-west-2 eu-west-1 eu-west-2 
+	     eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2 
+	     ap-southeast-2 sa-east-1 ca-central-1
        -p    Specify custom OpenVPN UDP port
        -u    Specify custom ssh user.***
        -y    Skip confirmations
@@ -80,7 +80,7 @@ NOTES:
         \* - Custom AMI may be needed if changing instance type.
         \** - Any instance size can be given but the t2.micro is more than enough.
         \*** - Custom user might be need if using a custom ami.
-	    \**** - AWS IAM user must have EC2 or Administrator permissions set.
+	\**** - AWS IAM user must have EC2 or Administrator permissions set.
 
 </pre></code>
 
