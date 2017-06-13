@@ -86,7 +86,7 @@ NOTES:
 
 ToDo:
   * Continue to update documentation
-  * Add deletion of Securoty Group if it is no longer in use.
+  * Add deletion of Security Group if it is no longer in use.
   * Add ability to create more client configs for one endpoint.
   * Pull Requests are welcome.
 
