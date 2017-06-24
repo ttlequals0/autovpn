@@ -1,20 +1,22 @@
 # Overview
 
-Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To create a VPN endpoint is done with a single command takes ~3 minutes. It will create the proper security groups. It spins up a tagged ec2  instance  and configures OpenVPN software. Once instance is configured an OpenVPN configuration file is downloaded and ready to use. There is also functionality to see which instances are running in which region and ability to terminate the instance when done. Additional functionality includes specifying instance type, generate ssh keypairs, specify custom ami,  change login user and more to come. 
+Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To create a VPN endpoint is done with a single command takes ~3 minutes. It will create the proper security groups. It spins up a tagged ec2  instance  and configures OpenVPN software. Once instance is configured an OpenVPN configuration file is downloaded and ready to use. There is also functionality to see which instances are running in which region and ability to terminate the instance when done. Additional functionality includes specifying instance type, generate ssh keypairs, specify custom ami, change login user and more to come.
 
 [![asciicast](https://asciinema.org/a/102869.png)](https://asciinema.org/a/102869)
 
 Use Case
   * Create on demand OpenVPN Endpoints in AWS that can easily be destroyed after done
     only pay for what you use.
-    
+
+AWS does not [charge for stopped instances](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html), but it is worth checking to make sure this is still true.
+
 Dependencies:
 
-1. Install boto by running: 
+1. Install boto by running:
 	<pre><addr>pip install boto</pre></addr>
-2. Install paramiko by running: 
+2. Install paramiko by running:
 	<pre><addr>pip install paramiko</pre></addr>
-3. Ensure that you have an AWS .credentials file by running: 
+3. Ensure that you have an AWS .credentials file by running:
 	<pre><addr>vi ~/.aws/credentials</pre></addr>
 	Then type in the following and add your keys (remove parenthesis):
 	<pre><code>
@@ -22,15 +24,16 @@ Dependencies:
 	aws_access_key_id = (your_access_key_here)
 	aws_secret_access_key = (your_secret_key_here)
 	</pre></code>
-4. Install OpenVPN client (if needed)
-
+4. Install OpenVPN client (if needed). The installation is os-dependent.
+5. Generate public/private keys, if necessary. See GitHub's documentation to [generate a key and add it to ssh-agent](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/). Note that you *must* start ```ssh-agent``` and load the key before you can use autovpn.
+6. Add your key to EC2 using [these instructions](https://alestic.com/2010/10/ec2-ssh-keys/). If you prefer the web front-end to using the AWS CLI, see [Importing Your Own Public Key to Amazon EC2](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws).
 
 Installation:
 
 1. Ensure dependencies are all installed.
 2. Clone repo to system.
   <pre><code>git clone https://github.com/ttlequals0/autovpn.git</code></pre>
-3. To create SSH keypair execute autovpn with -G and -r options for AWS region of choice. (optional)	
+3. To create SSH keypair execute autovpn with -G and -r options for AWS region of choice. (optional)
    NOTE: Make sure to add new key to your ssh-agent.
 	<pre><addr>./autovpn -G -r us-east-1</addr></pre>
 4. Execute autovpn with -C -k and -r options to deploy to AWS:
@@ -58,8 +61,8 @@ USAGE:
        -k    Specify the name of AWS keypair (Required)
        -m    Allow multiple connections to same endpoint.
        -r    Specify AWS Region (Required)
-	     us-east-1 us-west-1 us-east-2 us-west-2 eu-west-1 eu-west-2 
-	     eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2 
+	     us-east-1 us-west-1 us-east-2 us-west-2 eu-west-1 eu-west-2
+	     eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2
 	     ap-southeast-2 sa-east-1 ca-central-1
        -p    Specify custom OpenVPN UDP port
        -u    Specify custom ssh user.***
@@ -84,9 +87,12 @@ NOTES:
 
 </pre></code>
 
+Note that creating an endpoint can take some time to complete.
+
+autovpn does not work with Python 3. Please use Python 2.7.
+
 ToDo:
   * Continue to update documentation
   * Add deletion of Securoty Group if it is no longer in use.
   * Add ability to create more client configs for one endpoint.
   * Pull Requests are welcome.
-
