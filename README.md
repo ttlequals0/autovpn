@@ -12,8 +12,12 @@ Dependencies:
 
 1. Install boto by running: 
 	<pre><addr>pip install boto</pre></addr>
+	or
+	<pre><addr>apt-get install python-boto</pre></addr>
 2. Install paramiko by running: 
 	<pre><addr>pip install paramiko</pre></addr>
+	or	
+	<pre><addr>apt-get install python-paramiko</pre></addr>
 3. Ensure that you have an AWS .credentials file by running: 
 	<pre><addr>vi ~/.aws/credentials</pre></addr>
 	Then type in the following and add your keys (remove parenthesis):
