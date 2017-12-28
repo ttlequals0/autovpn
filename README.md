@@ -8,42 +8,52 @@ Use Case
   * Create on demand OpenVPN Endpoints in AWS that can easily be destroyed after done
     only pay for what you use.
     
-Dependencies:
+## Dependencies
 
-1. Install boto by running: 
-	<pre><addr>pip install boto</pre></addr>
-	or
-	<pre><addr>apt-get install python-boto</pre></addr>
-2. Install paramiko by running: 
-	<pre><addr>pip install paramiko</pre></addr>
-	or	
-	<pre><addr>apt-get install python-paramiko</pre></addr>
+1. Create a virtualenv:
+```
+mkvirtualenv -p python2 env/
+source env/bin/activate
+````
+
+2. Install dependencies by running `pip install -r requirements.txt`
+
 3. Ensure that you have an AWS .credentials file by running: 
-	<pre><addr>vi ~/.aws/credentials</pre></addr>
-	Then type in the following and add your keys (remove parenthesis):
-	<pre><code>
-	[default]
-	aws_access_key_id = (your_access_key_here)
-	aws_secret_access_key = (your_secret_key_here)
-	</pre></code>
+```
+vi ~/.aws/credentials
+```
+Then type in the following and add your keys (remove parenthesis):
+```
+[default]
+aws_access_key_id = (your_access_key_here)
+aws_secret_access_key = (your_secret_key_here)
+```
 4. Install OpenVPN client (if needed)
 
-
-Installation:
+## Installation
 
 1. Ensure dependencies are all installed.
 2. Clone repo to system.
-  <pre><code>git clone https://github.com/ttlequals0/autovpn.git</code></pre>
+```
+git clone https://github.com/ttlequals0/autovpn.git
+```
 3. To create SSH keypair execute autovpn with -G and -r options for AWS region of choice. (optional)	
    NOTE: Make sure to add new key to your ssh-agent.
-	<pre><addr>./autovpn -G -r us-east-1</addr></pre>
+```
+./autovpn -G -r us-east-1
+```
 4. Execute autovpn with -C -k and -r options to deploy to AWS:
-	<pre><addr>./autovpn -C -r us-east-1 -k us-east-1_vpnkey</addr></pre>
+```
+./autovpn -C -r us-east-1 -k us-east-1_vpnkey
+```
 4. OpenVPN config files are downloaded to current working directory.
 5. Import the OpenVPN config file and connect:
-	<pre><addr>sudo openvpn us-east-1_aws_vpn.ovpn</pre></addr></pre>  
+```
+sudo openvpn us-east-1_aws_vpn.ovpn
+``` 
 
-<pre><code>
+## Man page
+```
 DESCRIPTION:
     autovpn - On Demand AWS OpenVPN Endpoint Deployment Tool.
 	Project found at https://github.com/ttlequals0/autovpn
@@ -85,10 +95,9 @@ NOTES:
         ** - Any instance size can be given but the t2.micro is more than enough.
         *** - Custom user might be need if using a custom ami.
 	**** - AWS IAM user must have EC2 or Administrator permissions set.
+```
 
-</pre></code>
-
-ToDo:
+## To Do
   * Continue to update documentation
   * Add deletion of Securoty Group if it is no longer in use.
   * Add ability to create more client configs for one endpoint.
