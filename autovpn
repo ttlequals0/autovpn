@@ -35,6 +35,7 @@ function usage {
  eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
   $white-p$gray\t Specify custom OpenVPN UDP port.
   $white-u$gray\t Specify custom ssh user.***
+  $white-t$gray\t Specify custom timeout (in seconds) which is passed to ssh-keyscan to check whether instance is booted fully.***
   $white-y$gray\t Skip confirmations
   $white-z$gray\t Specify instance id." 
   echo -e "${white}EXAMPLES:\n $gray Create OpenVPN endpoint: \n\tautovpn -C -r us-east-1 -k us-east-1_vpnkey\n\
@@ -110,7 +111,7 @@ if ( ! getopts "CDGSTyk:a:d:hmr:i:p:u:z:" opt); then
 	exit 1;
 fi
 
-while getopts ":CDGSTyk:a:d:hmr:i:p:u:z:" opt; do
+while getopts ":CDGSTyk:a:d:hmr:i:p:t:u:z:" opt; do
   case $opt in
     C) Cflag="defined" ;;
     D) Dflag="defined" ;;        
@@ -141,7 +142,8 @@ while getopts ":CDGSTyk:a:d:hmr:i:p:u:z:" opt; do
       else echo "Not a valid region"; bail 3; fi                                               
       ;; 
     p) vpn_port="$OPTARG" ;;
-    u) custom_user="$OPTARG" ;;       
+    t) tflag="defined"; ssh_keyscan_timeout="$OPTARG" ;;
+    u) custom_user="$OPTARG" ;;
     y) yflag="defined" ;;
     z) zflag="defined"; term_ids="$OPTARG" ;;     
     \?) echo "Invalid option: -$OPTARG" >&2 ; bail 1 ;;
@@ -194,7 +196,11 @@ if [ -n "$Cflag" ] && [ -n "$rflag" ] && [ -n "$kflag"  ] ; then
     do 
 	   echo -e "${yellow}$instance_ip is still booting..."
 	   sleep 15
-	   ssh-keyscan $instance_ip 2>&1 | grep -v "^$" > /dev/null
+             if [[ -n "$tflag" ]]; then
+                ssh-keyscan -T $ssh_keyscan_timeout $instance_ip 2>&1 | grep -v "^$" > /dev/null
+             else
+                ssh-keyscan $instance_ip 2>&1 | grep -v "^$" > /dev/null
+             fi
 	   status=$?
   done
   echo -e "${white}Setting up VPN on $instance_ip"
