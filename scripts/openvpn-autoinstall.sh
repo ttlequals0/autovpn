@@ -56,8 +56,6 @@ newclient () {
 	echo "</tls-auth>" >> ~/$1.ovpn
 }
 
-
-
 # Get external IP assumed behind NAT
 IP=$(ip addr | grep 'inet' | grep -v inet6 | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)
 if [[ "$IP" = "" ]]; then
@@ -79,14 +77,14 @@ fi
 if [[ -d /etc/openvpn/easy-rsa/ ]]; then
 	rm -rf /etc/openvpn/easy-rsa/
 fi
-
 # Get easy-rsa
-wget -O ~/EasyRSA-3.0.3.tgz "https://github.com/OpenVPN/easy-rsa/releases/download/v3.0.3/EasyRSA-3.0.3.tgz"
-tar xzf ~/EasyRSA-3.0.3.tgz -C ~/
-mv ~/EasyRSA-3.0.3/ /etc/openvpn/
-mv /etc/openvpn/EasyRSA-3.0.3/ /etc/openvpn/easy-rsa/
+EASYRSAURL='https://github.com/OpenVPN/easy-rsa/releases/download/v3.0.6/EasyRSA-unix-v3.0.6.tgz'
+wget -O ~/easyrsa.tgz "$EASYRSAURL" 2>/dev/null || curl -Lo ~/easyrsa.tgz "$EASYRSAURL"
+tar xzf ~/easyrsa.tgz -C ~/
+mv ~/EasyRSA-v3.0.6/ /etc/openvpn/
+mv /etc/openvpn/EasyRSA-v3.0.6/ /etc/openvpn/easy-rsa/
 chown -R root:root /etc/openvpn/easy-rsa/
-rm -rf ~/EasyRSA-3.0.3.tgz
+rm -f ~/easyrsa.tgz
 cd /etc/openvpn/easy-rsa/
 # Create the PKI, set up the CA, the DH params and the server + client certificates
 ./easyrsa init-pki
@@ -118,20 +116,18 @@ topology subnet
 server 10.8.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt" > /etc/openvpn/server.conf
 echo 'push "redirect-gateway def1 bypass-dhcp"' >> /etc/openvpn/server.conf
-echo 'push "dhcp-option DNS 9.9.9.9"' >> /etc/openvpn/server.conf
-echo 'push "dhcp-option DNS 8.8.8.8"' >> /etc/openvpn/server.conf
 
+echo 'push "dhcp-option DNS 4.2.2.1"' >> /etc/openvpn/server.conf
 echo "keepalive 10 120
-cipher AES-128-CBC
-comp-lzo
+cipher AES-256-CBC
 user nobody
 group $GROUPNAME
 persist-key
 persist-tun
 status openvpn-status.log
 verb 3
+mssfix 1200
 crl-verify crl.pem" >> /etc/openvpn/server.conf
-echo 'mssfix 1200' >> /etc/openvpn/server.conf
 
 # Enable net.ipv4.ip_forward for the system
 sed -i '/\<net.ipv4.ip_forward\>/c\net.ipv4.ip_forward=1' /etc/sysctl.conf
@@ -144,7 +140,7 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 if [[ "$OS" = 'debian' && ! -e $RCLOCAL ]]; then
 	echo '#!/bin/sh -e exit 0' > $RCLOCAL
 fi
-chmod +x $RCLOCAL	
+chmod +x $RCLOCAL
 # Set NAT for the VPN subnet
 iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j SNAT --to "$IP"
 sed -i "1 a\iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j SNAT --to $IP" $RCLOCAL
@@ -179,7 +175,7 @@ if hash sestatus 2>/dev/null; then
 			semanage port -a -t openvpn_port_t -p udp $PORT
 		fi
 	fi
-fi		
+fi
 # restart OpenVPN
 if [[ "$OS" = 'debian' ]]; then
 	# check for systemd
@@ -211,11 +207,10 @@ persist-key
 persist-tun
 remote-cert-tls server
 auth SHA512
-cipher AES-128-CBC
-comp-lzo
+cipher AES-256-CBC
 setenv opt block-outside-dns
 key-direction 1
 verb 3" > /etc/openvpn/client-common.txt
-	# Generates the custom client.ovpn
-	newclient "$CLIENT"
+# Generates the custom client.ovpn
+newclient "$CLIENT"
 exit

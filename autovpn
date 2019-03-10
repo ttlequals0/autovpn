@@ -19,9 +19,9 @@ yellow='\033[00;33m'
 function usage {
   # ---------------------------------------------------------------------------
 	echo -e "${white}DESCRIPTION:\n $gray        $(basename "$0") - On Demand AWS OpenVPN Endpoint Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
-  echo -e "${white}USAGE:\n $gray ACTION\t [OPTIONS] 
+  echo -e "${white}USAGE:\n $gray [OPTIONS]\t [ACION]
   $white-C$gray\t Create VPN endpoint.
-  $white-D$gray\t Delete keypair from region.  
+  $white-D$gray\t Delete keypair from region.
   $white-G$gray\t Generate new keypair.
   $white-S$gray\t Get all running instances in a given region.
   $white-T$gray\t Terminate a OpenVPN endpoint.
@@ -32,12 +32,12 @@ function usage {
   $white-k$gray\t Specify the name of AWS keypair.
   $white-m$gray\t Allow multiple connections to same endpoint.
   $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-east-2 us-west-1 us-west-2 eu-west-1 eu-west-2\n\t\
- eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
+  eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
   $white-p$gray\t Specify custom OpenVPN UDP port.
   $white-u$gray\t Specify custom ssh user.***
   $white-t$gray\t Specify custom timeout (in seconds) which is passed to ssh-keyscan to check whether instance is booted fully.***
   $white-y$gray\t Skip confirmations
-  $white-z$gray\t Specify instance id." 
+  $white-z$gray\t Specify instance id."
   echo -e "${white}EXAMPLES:\n $gray Create OpenVPN endpoint: \n\tautovpn -C -r us-east-1 -k us-east-1_vpnkey\n\
   Generate keypar in a region.\n\tautovpn -G -r us-east-1\n  Get running instances\n\tautovpn -S -r us-west-1\n\
   Terminate OpenVPN endpoint\n\tautovpn -T -r us-west-1 -z i-b933e00c\n  Using custom options\n\
@@ -62,7 +62,7 @@ bail ()
 {
 	echo -e "${red}Error code $1"
   usage
-	exit 
+	exit
 }
 
 #create backup of files
@@ -77,7 +77,7 @@ filecheck ()
   if [[ -f ./scripts/$1.bak ]]; then
     echo 0
   else
-    backup "$1" 
+    backup "$1"
     echo 0
   fi
 }
@@ -87,22 +87,22 @@ cleanup ()
 {
   find ./scripts -type f  -iname "*.bak" -exec bash -c 'git checkout ./scripts/$(basename -s .bak "$1")' _ "{}" \;
   find ./scripts -type f  -iname "*.bak" -delete
-  tput sgr0 
+  tput sgr0
   exit
-} 
+}
 
 #funtion to provide reason for failure
 failed ()
 {
-  if [ "$1" == "1" ]; then 
+  if [ "$1" == "1" ]; then
   echo -e "${red}Key already exists in AWS\n"
-  elif [ "$1" == "2" ]; then 
+  elif [ "$1" == "2" ]; then
   echo -e "${red}\nFailed to terminate instance"
-  elif [ "$1" == "3" ]; then 
-  echo -e "${red}\nFailed to delete keypair"  
+  elif [ "$1" == "3" ]; then
+  echo -e "${red}\nFailed to delete keypair"
   fi
   cleanup
-  exit 
+  exit
 }
 
 #Parse and validate flags
@@ -114,14 +114,14 @@ fi
 while getopts ":CDGSTyk:a:d:hmr:i:p:t:u:z:" opt; do
   case $opt in
     C) Cflag="defined" ;;
-    D) Dflag="defined" ;;        
+    D) Dflag="defined" ;;
     G) Gflag="defined" ;;
-    S) Sflag="defined" ;; 
+    S) Sflag="defined" ;;
     T) Tflag="defined" ;;
     a) custom_ami="$OPTARG" ;;
-    d) custom_DNS="$OPTARG" ;;               
-    h) usage && exit 0 ;; 
-    i) instance_type="$OPTARG" ;;       	
+    d) custom_DNS="$OPTARG" ;;
+    h) usage && exit 0 ;;
+    i) instance_type="$OPTARG" ;;
     k) kflag="defined"; keyname="$OPTARG" ;;
     m) mflag="defined" ;;
     r) rflag="defined"
@@ -131,45 +131,45 @@ while getopts ":CDGSTyk:a:d:hmr:i:p:t:u:z:" opt; do
       elif [ "$OPTARG" == "us-west-2" ]; then region="us-west-2"; ami="ami-9abea4fb"
       elif [ "$OPTARG" == "eu-west-1" ]; then region="eu-west-1"; ami="ami-f95ef58a"
       elif [ "$OPTARG" == "eu-west-2" ]; then region="eu-west-2"; ami="ami-23d0da47"
-      elif [ "$OPTARG" == "eu-central-1" ]; then region="eu-central-1"; ami="ami-87564feb"  
+      elif [ "$OPTARG" == "eu-central-1" ]; then region="eu-central-1"; ami="ami-87564feb"
       elif [ "$OPTARG" == "ap-northeast-1" ]; then region="ap-northeast-1"; ami="ami-a21529cc"
       elif [ "$OPTARG" == "ap-northeast-2" ]; then region="ap-northeast-2"; ami="ami-09dc1267"
       elif [ "$OPTARG" == "ap-southeast-1" ]; then region="ap-southeast-1"; ami="ami-25c00c46"
-      elif [ "$OPTARG" == "ap-southeast-2" ]; then region="ap-southeast-2"; ami="ami-6c14310f" 
+      elif [ "$OPTARG" == "ap-southeast-2" ]; then region="ap-southeast-2"; ami="ami-6c14310f"
       elif [ "$OPTARG" == "sa-east-1" ]; then region="sa-east-1"; ami="ami-0fb83963"
       elif [ "$OPTARG" == "ap-south-1" ]; then region="ap-south-1"; ami="ami-4a90fa25"
       elif [ "$OPTARG" == "ca-central-1" ]; then region="ca-central-1"; ami="ami-0651e362"
-      else echo "Not a valid region"; bail 3; fi                                               
-      ;; 
+      else echo "Not a valid region"; bail 3; fi
+      ;;
     p) vpn_port="$OPTARG" ;;
     t) tflag="defined"; ssh_keyscan_timeout="$OPTARG" ;;
     u) custom_user="$OPTARG" ;;
     y) yflag="defined" ;;
-    z) zflag="defined"; term_ids="$OPTARG" ;;     
+    z) zflag="defined"; term_ids="$OPTARG" ;;
     \?) echo "Invalid option: -$OPTARG" >&2 ; bail 1 ;;
-    :)  echo "Option -$OPTARG requires an argument." >&2 ; bail 2      
+    :)  echo "Option -$OPTARG requires an argument." >&2 ; bail 2
   esac
 done
 
 if [[ -z "$instance_type" ]]; then 	instance_type="t2.micro"; fi
 if [[ -n "$custom_ami" ]]; then  ami="$custom_ami"; fi
 if [[ -n "$custom_user" ]]; then  user="$custom_user"; fi
-if [[ -n "$custom_DNS" ]]; then 
+if [[ -n "$custom_DNS" ]]; then
   dcheck=$(filecheck openvpn-autoinstall.sh)
   [[ $dcheck == "0" ]]
-  sed -i '121,122d' ./scripts/openvpn-autoinstall.sh
-  sed -i "121i echo 'push \"dhcp-option DNS $custom_DNS\"' >> /etc/openvpn/server.conf" ./scripts/openvpn-autoinstall.sh
+  sed -i '119,120d' ./scripts/openvpn-autoinstall.sh
+  sed -i "120i echo 'push \"dhcp-option DNS $custom_DNS\"' >> /etc/openvpn/server.conf" ./scripts/openvpn-autoinstall.sh
 fi
-if [[ -z "$vpn_port"  ]]; then  
+if [[ -z "$vpn_port"  ]]; then
   vpn_port="1194"
 else
   pcheck=$(filecheck openvpn-autoinstall.sh)
-  [[ $pcheck == "0" ]] 
+  [[ $pcheck == "0" ]]
   sed -i "s/1194/$vpn_port/g"  ./scripts/openvpn-autoinstall.sh
-fi 
+fi
 if [[ -n "$mflag" ]] ; then
   mcheck=$(filecheck openvpn-autoinstall.sh)
-  [[ $mcheck == "0" ]] 
+  [[ $mcheck == "0" ]]
   sed -i "123i echo 'duplicate-cn' >> /etc/openvpn/server.conf" ./scripts/openvpn-autoinstall.sh
 fi
 
@@ -181,7 +181,7 @@ confirm ()
   if [[ -n "$yflag" ]]; then
     REPLY="Y"
   else
-   read -p "Are you sure you want to continue? y/n :" -n 1 -r
+    read -p "Are you sure you want to continue? y/n :" -n 1 -r
   fi
 }
 
@@ -192,23 +192,23 @@ if [ -n "$Cflag" ] && [ -n "$rflag" ] && [ -n "$kflag"  ] ; then
   [[ $instance_ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] || bail 4
   echo -e "${green}Instance has been created $instance_ip"
   echo -e "${yellow}Giving new instance some time to fully boot up..."
-  while [ "$status" != "0" ] 
-    do 
-	   echo -e "${yellow}$instance_ip is still booting..."
-	   sleep 15
-             if [[ -n "$tflag" ]]; then
+  while [ "$status" != "0" ]
+    do
+	    echo -e "${yellow}$instance_ip is still booting..."
+	    sleep 15
+            if [[ -n "$tflag" ]]; then
                 ssh-keyscan -T $ssh_keyscan_timeout $instance_ip 2>&1 | grep -v "^$" > /dev/null
-             else
+            else
                 ssh-keyscan $instance_ip 2>&1 | grep -v "^$" > /dev/null
-             fi
-	   status=$?
+            fi
+	  status=$?
   done
   echo -e "${white}Setting up VPN on $instance_ip"
   scpcmd "$local_script" $user@$instance_ip:"$remote_script" || bail 5
   sshcmd "$user"@$instance_ip "chmod +x $remote_script && $run_script" || bail 6
   scpcmd $user@$instance_ip:"$remote_path" "$local_path" || bail 7
   echo -e "${green}OpenVPN config file is located at $(pwd)"
-fi 
+fi
 
 #Generate Keypair
 if [ -n "$Gflag" ] && [ -n "$rflag" ] ; then
@@ -237,30 +237,30 @@ if [ -n "$Sflag" ] && [ -n "$rflag" ]  ; then
   else
     echo -e "${green}Instances running in ${region}\n ${get_status}"
   fi
-fi  
+fi
 
 #Terminate ec2 instance
 if [ -n "$Tflag" ] && [ -n "$rflag" ] && [ -n "$zflag" ]  ; then
-   echo -e "${yellow}WARNING: instance ${term_ids} in ${region} will be terminated. This is not reversible"
-   confirm
-   if [[ $REPLY =~ ^[Yy]$ ]]; then
+  echo -e "${yellow}WARNING: instance ${term_ids} in ${region} will be terminated. This is not reversible"
+  confirm
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
     termec2=$(python2 ./scripts/terminate.py "$region" "$term_ids")
     [[ $termec2 == "Success" ]] || failed 2
     echo -e "\n${green}${term_ids} has been terminated."
-   elif [[ $REPLY =~ ^[Nn]$ ]]; then
+  elif [[ $REPLY =~ ^[Nn]$ ]]; then
     echo -e "\n${green}No instances were terminated."
   fi
-fi 
+fi
 
 #Delete keypair from AWS
 if [ -n "$Dflag" ] && [ -n "$rflag" ] && [ -n "$kflag" ]  ; then
-   echo -e "${yellow}WARNING: Keypair ${keyname} in ${region} will be deleted. This is not reversible"
-   confirm
-   if [[ $REPLY =~ ^[Yy]$ ]]; then
+  echo -e "${yellow}WARNING: Keypair ${keyname} in ${region} will be deleted. This is not reversible"
+  confirm
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
     delkey=$(python2 ./scripts/delete_key.py "$region" "$keyname")
     [[ $delkey == "Success" ]] || failed 3
     echo -e "\n${green}${keyname} has been deleted. Make sure to remove the .pem file on your box "
-   elif [[ $REPLY =~ ^[Nn]$ ]]; then
+  elif [[ $REPLY =~ ^[Nn]$ ]]; then
     echo -e "\n${green}No keypairs were deleted."
   fi
 fi
