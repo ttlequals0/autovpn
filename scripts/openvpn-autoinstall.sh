@@ -116,8 +116,9 @@ topology subnet
 server 10.8.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt" > /etc/openvpn/server.conf
 echo 'push "redirect-gateway def1 bypass-dhcp"' >> /etc/openvpn/server.conf
+echo 'push "dhcp-option DNS 8.8.8.8"' >> /etc/openvpn/server.conf
+echo 'push "dhcp-option DNS 9.9.9.9"' >> /etc/openvpn/server.conf
 
-echo 'push "dhcp-option DNS 4.2.2.1"' >> /etc/openvpn/server.conf
 echo "keepalive 10 120
 cipher AES-256-CBC
 user nobody
