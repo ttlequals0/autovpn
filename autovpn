@@ -7,6 +7,7 @@ local_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/scripts/openvpn-
 remote_script="\$HOME/openvpn-autoinstall.sh"
 run_script="sudo bash ./openvpn-autoinstall.sh"
 remote_path="\$HOME/aws_vpn.ovpn"
+export BOTO_USE_ENDPOINT_HEURISTICS=true
 
 #Terminal colors
 gray='\033[0m'
@@ -18,7 +19,7 @@ yellow='\033[00;33m'
 # function for help output
 function usage {
   # ---------------------------------------------------------------------------
-	echo -e "${white}DESCRIPTION:\n $gray        $(basename "$0") - On Demand AWS OpenVPN Endpoint Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
+  echo -e "${white}DESCRIPTION:\n $gray        $(basename "$0") - On Demand AWS OpenVPN Endpoint Deployment Tool.\n\t Project found at https://github.com/ttlequals0/autovpn"
   echo -e "${white}USAGE:\n $gray [OPTIONS]\t [ACION]
   $white-C$gray\t Create VPN endpoint.
   $white-D$gray\t Delete keypair from region.
@@ -32,7 +33,7 @@ function usage {
   $white-k$gray\t Specify the name of AWS keypair.
   $white-m$gray\t Allow multiple connections to same endpoint.
   $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-east-2 us-west-1 us-west-2 eu-west-1 eu-west-2\n\t\
-  eu-central-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
+ eu-west-3 eu-central-1 eu-north-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
   $white-p$gray\t Specify custom OpenVPN UDP port.
   $white-u$gray\t Specify custom ssh user.***
   $white-t$gray\t Specify custom timeout (in seconds) which is passed to ssh-keyscan to check whether instance is booted fully.***
@@ -60,9 +61,9 @@ scpcmd() {
 #Function for error handling
 bail ()
 {
-	echo -e "${red}Error code $1"
+  echo -e "${red}Error code $1"
   usage
-	exit
+  exit
 }
 
 #create backup of files
@@ -88,6 +89,7 @@ cleanup ()
   find ./scripts -type f  -iname "*.bak" -exec bash -c 'git checkout ./scripts/$(basename -s .bak "$1")' _ "{}" \;
   find ./scripts -type f  -iname "*.bak" -delete
   tput sgr0
+  unset BOTO_USE_ENDPOINT_HEURISTICS
   exit
 }
 
@@ -107,8 +109,8 @@ failed ()
 
 #Parse and validate flags
 if ( ! getopts "CDGSTyk:a:d:hmr:i:p:u:z:" opt); then
-	usage;
-	exit 1;
+  usage;
+  exit 1;
 fi
 
 while getopts ":CDGSTyk:a:d:hmr:i:p:t:u:z:" opt; do
@@ -131,7 +133,9 @@ while getopts ":CDGSTyk:a:d:hmr:i:p:t:u:z:" opt; do
       elif [ "$OPTARG" == "us-west-2" ]; then region="us-west-2"; ami="ami-9abea4fb"
       elif [ "$OPTARG" == "eu-west-1" ]; then region="eu-west-1"; ami="ami-f95ef58a"
       elif [ "$OPTARG" == "eu-west-2" ]; then region="eu-west-2"; ami="ami-23d0da47"
+      elif [ "$OPTARG" == "eu-west-3" ]; then region="eu-west-3"; ami="ami-4262d53f"
       elif [ "$OPTARG" == "eu-central-1" ]; then region="eu-central-1"; ami="ami-87564feb"
+      elif [ "$OPTARG" == "eu-north-1" ]; then region="eu-north-1"; ami="ami-569c1528"
       elif [ "$OPTARG" == "ap-northeast-1" ]; then region="ap-northeast-1"; ami="ami-a21529cc"
       elif [ "$OPTARG" == "ap-northeast-2" ]; then region="ap-northeast-2"; ami="ami-09dc1267"
       elif [ "$OPTARG" == "ap-southeast-1" ]; then region="ap-southeast-1"; ami="ami-25c00c46"
@@ -152,6 +156,7 @@ while getopts ":CDGSTyk:a:d:hmr:i:p:t:u:z:" opt; do
 done
 
 if [[ -z "$instance_type" ]]; then 	instance_type="t2.micro"; fi
+if [[ $region = "eu-north-1" ]]; then 	instance_type="t3.micro"; fi
 if [[ -n "$custom_ami" ]]; then  ami="$custom_ami"; fi
 if [[ -n "$custom_user" ]]; then  user="$custom_user"; fi
 if [[ -n "$custom_DNS" ]]; then
@@ -194,14 +199,14 @@ if [ -n "$Cflag" ] && [ -n "$rflag" ] && [ -n "$kflag"  ] ; then
   echo -e "${yellow}Giving new instance some time to fully boot up..."
   while [ "$status" != "0" ]
     do
-	    echo -e "${yellow}$instance_ip is still booting..."
-	    sleep 15
+      echo -e "${yellow}$instance_ip is still booting..."
+      sleep 15
             if [[ -n "$tflag" ]]; then
                 ssh-keyscan -T $ssh_keyscan_timeout $instance_ip 2>&1 | grep -v "^$" > /dev/null
             else
                 ssh-keyscan $instance_ip 2>&1 | grep -v "^$" > /dev/null
             fi
-	  status=$?
+    status=$?
   done
   echo -e "${white}Setting up VPN on $instance_ip"
   scpcmd "$local_script" $user@$instance_ip:"$remote_script" || bail 5
@@ -227,7 +232,7 @@ if [ -n "$Gflag" ] && [ -n "$rflag" ] ; then
     echo -e "${yellow}A Keypair for this region already exists."
   fi
   echo -e "${green}Use ${region}_vpnkey as keyname to create endpoint.\nNote you may need to add ${region}_vpnkey to ssh-agent "
-fi 
+fi
 
 #Get status
 if [ -n "$Sflag" ] && [ -n "$rflag" ]  ; then
