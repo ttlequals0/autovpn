@@ -5,3 +5,4 @@ test.sh
 test.log
 regions
 .DS_Store
+.vscode
