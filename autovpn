@@ -33,7 +33,8 @@ function usage {
   $white-k$gray\t Specify the name of AWS keypair.
   $white-m$gray\t Allow multiple connections to same endpoint.
   $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-east-2 us-west-1 us-west-2 eu-west-1 eu-west-2\n\t\
- eu-west-3 eu-central-1 eu-north-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1 ca-central-1.
+ eu-west-3 eu-central-1 eu-north-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1\
+ ap-east-1 ca-central-1.
   $white-p$gray\t Specify custom OpenVPN UDP port.
   $white-u$gray\t Specify custom ssh user.***
   $white-t$gray\t Specify custom timeout (in seconds) which is passed to ssh-keyscan to check whether instance is booted fully.***
@@ -142,6 +143,7 @@ while getopts ":CDGSTyk:a:d:hmr:i:p:t:u:z:" opt; do
       elif [ "$OPTARG" == "ap-southeast-2" ]; then region="ap-southeast-2"; ami="ami-6c14310f"
       elif [ "$OPTARG" == "sa-east-1" ]; then region="sa-east-1"; ami="ami-0fb83963"
       elif [ "$OPTARG" == "ap-south-1" ]; then region="ap-south-1"; ami="ami-4a90fa25"
+      elif [ "$OPTARG" == "ap-east-1" ]; then region="ap-east-1"; ami="ami-c02058b1"
       elif [ "$OPTARG" == "ca-central-1" ]; then region="ca-central-1"; ami="ami-0651e362"
       else echo "Not a valid region"; bail 3; fi
       ;;
@@ -156,7 +158,7 @@ while getopts ":CDGSTyk:a:d:hmr:i:p:t:u:z:" opt; do
 done
 
 if [[ -z "$instance_type" ]]; then 	instance_type="t2.micro"; fi
-if [[ $region = "eu-north-1" ]]; then 	instance_type="t3.micro"; fi
+if [[ $region =~ ^(eu-north-1|ap-east-1) ]]; then  instance_type="t3.micro"; fi
 if [[ -n "$custom_ami" ]]; then  ami="$custom_ami"; fi
 if [[ -n "$custom_user" ]]; then  user="$custom_user"; fi
 if [[ -n "$custom_DNS" ]]; then
