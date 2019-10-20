@@ -273,4 +273,4 @@ if [ -n "$Dflag" ] && [ -n "$rflag" ] && [ -n "$kflag" ]  ; then
 fi
 
 #call cleanup Function
-#cleanup
+cleanup
