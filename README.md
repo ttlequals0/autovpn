@@ -12,7 +12,7 @@ Use Case
 
 1. Create a virtualenv:
 ```
-mkvirtualenv -p python2 env/
+mkvirtualenv -p python3 env/
 source env/bin/activate
 ````
 
