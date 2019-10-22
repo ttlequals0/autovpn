@@ -26,7 +26,9 @@ def generate_key(key_name=keyname,
             key = ec2.create_key_pair(key_name)
 
             # Save key
-            key.save(key_dir)
+            save_key_path = "%s/%s.pem" %(key_dir, key_name)
+            with open(save_key_path, "w") as file:
+                file.write(key.material)
             print("Success")
         else:
             raise
