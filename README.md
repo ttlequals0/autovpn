@@ -7,7 +7,7 @@ Script that allows the easy creation of OpenVPN endpoints in any AWS region.  To
 Use Case
   * Create on demand OpenVPN Endpoints in AWS that can easily be destroyed after done
     only pay for what you use.
-    
+
 ## Dependencies
 
 1. Create a virtualenv:
@@ -50,7 +50,7 @@ git clone https://github.com/ttlequals0/autovpn.git
 5. Import the OpenVPN config file and connect:
 ```
 sudo openvpn us-east-1_aws_vpn.ovpn
-``` 
+```
 
 ## Man page
 ```
@@ -64,7 +64,6 @@ USAGE:
        -G    Generate new keypair.
        -S    Get all running instances in a given region.
        -T    Terminate a OpenVPN endpoint.
-       -a    Specify custom ami.*
        -d    Specify custom DNS server. (ex. 4.2.2.1)
        -h    Displays this message.
        -i    AWS Instance type (Optional, Default is t2.micro)
@@ -74,7 +73,8 @@ USAGE:
        -r    Specify AWS Region (Required)
 	     us-east-1 us-west-1 us-east-2 us-west-2 eu-west-1 eu-west-2
 	     eu-west-3 eu-central-1 eu-north-1 ap-southeast-1 ap-northeast-1
-	     ap-northeast-2 ap-southeast-2 sa-east-1 ap-east-1 ca-central-1
+	     ap-northeast-2 ap-northeast-3 ap-southeast-2 sa-east-1
+       ap-east-1 ca-central-1 me-south-1
        -p    Specify custom OpenVPN UDP port
        -u    Specify custom ssh user.***
        -y    Skip confirmations

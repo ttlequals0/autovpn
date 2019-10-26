@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #Variable deceleration
 scp_options=(-o StrictHostKeyChecking=no -o NumberOfPasswordPrompts=1 -o ConnectTimeout=30 -o "UserKnownHostsFile /dev/null")
@@ -26,15 +26,14 @@ function usage {
   $white-G$gray\t Generate new keypair.
   $white-S$gray\t Get all running instances in a given region.
   $white-T$gray\t Terminate a OpenVPN endpoint.
-  $white-a$gray\t Specify a custom ami.*
   $white-d$gray\t Specify a custom DNS server. (ex. 4.2.2.1)
   $white-h$gray\t Displays this message.
   $white-i$gray\t AWS Instance type (Optional, Default is t2.micro)\n\t t2.nano t2.micro t2.small t2.medium t2.large **
   $white-k$gray\t Specify the name of AWS keypair.
   $white-m$gray\t Allow multiple connections to same endpoint.
   $white-r$gray\t Specify AWS Region.\n\t us-east-1 us-east-2 us-west-1 us-west-2 eu-west-1 eu-west-2\n\t\
- eu-west-3 eu-central-1 eu-north-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t sa-east-1 ap-southeast-2 ap-south-1\
- ap-east-1 ca-central-1.
+ eu-west-3 eu-central-1 eu-north-1 ap-southeast-1 ap-northeast-1 ap-northeast-2\n\t ap-northeast-3 sa-east-1 ap-southeast-2 ap-south-1\
+ ap-east-1 ca-central-1 me-south-1.
   $white-p$gray\t Specify custom OpenVPN UDP port.
   $white-u$gray\t Specify custom ssh user.***
   $white-t$gray\t Specify custom timeout (in seconds) which is passed to ssh-keyscan to check whether instance is booted fully.***
@@ -128,23 +127,25 @@ while getopts ":CDGSTyk:a:d:hmr:i:p:t:u:z:" opt; do
     k) kflag="defined"; keyname="$OPTARG" ;;
     m) mflag="defined" ;;
     r) rflag="defined"
-      if [ "$OPTARG" == "us-east-1" ]; then region="us-east-1"; ami="ami-d05e75b8"
-      elif [ "$OPTARG" == "us-east-2" ]; then region="us-east-2"; ami="ami-153e6470"
-      elif [ "$OPTARG" == "us-west-1" ]; then region="us-west-1"; ami="ami-06116566"
-      elif [ "$OPTARG" == "us-west-2" ]; then region="us-west-2"; ami="ami-9abea4fb"
-      elif [ "$OPTARG" == "eu-west-1" ]; then region="eu-west-1"; ami="ami-f95ef58a"
-      elif [ "$OPTARG" == "eu-west-2" ]; then region="eu-west-2"; ami="ami-23d0da47"
-      elif [ "$OPTARG" == "eu-west-3" ]; then region="eu-west-3"; ami="ami-4262d53f"
-      elif [ "$OPTARG" == "eu-central-1" ]; then region="eu-central-1"; ami="ami-87564feb"
-      elif [ "$OPTARG" == "eu-north-1" ]; then region="eu-north-1"; ami="ami-569c1528"
-      elif [ "$OPTARG" == "ap-northeast-1" ]; then region="ap-northeast-1"; ami="ami-a21529cc"
-      elif [ "$OPTARG" == "ap-northeast-2" ]; then region="ap-northeast-2"; ami="ami-09dc1267"
-      elif [ "$OPTARG" == "ap-southeast-1" ]; then region="ap-southeast-1"; ami="ami-25c00c46"
-      elif [ "$OPTARG" == "ap-southeast-2" ]; then region="ap-southeast-2"; ami="ami-6c14310f"
-      elif [ "$OPTARG" == "sa-east-1" ]; then region="sa-east-1"; ami="ami-0fb83963"
-      elif [ "$OPTARG" == "ap-south-1" ]; then region="ap-south-1"; ami="ami-4a90fa25"
-      elif [ "$OPTARG" == "ap-east-1" ]; then region="ap-east-1"; ami="ami-c02058b1"
-      elif [ "$OPTARG" == "ca-central-1" ]; then region="ca-central-1"; ami="ami-0651e362"
+      if [ "$OPTARG" == "us-east-1" ]; then region="us-east-1"; ami="ami-0d5ae5525eb033d0a"
+      elif [ "$OPTARG" == "us-east-2" ]; then region="us-east-2"; ami="ami-0a7f2b5b6b87eaa1b"
+      elif [ "$OPTARG" == "us-west-1" ]; then region="us-west-1"; ami="ami-00a3e4424e9ab3e56"
+      elif [ "$OPTARG" == "us-west-2" ]; then region="us-west-2"; ami="ami-09c6723c6c24250c9"
+      elif [ "$OPTARG" == "eu-west-1" ]; then region="eu-west-1"; ami="ami-0e41581acd7dedd99"
+      elif [ "$OPTARG" == "eu-west-2" ]; then region="eu-west-2"; ami="ami-00f94dc949fea2adf"
+      elif [ "$OPTARG" == "eu-west-3" ]; then region="eu-west-3"; ami="ami-0df03c7641cf41947"
+      elif [ "$OPTARG" == "eu-central-1" ]; then region="eu-central-1"; ami="ami-040a1551f9c9d11ad"
+      elif [ "$OPTARG" == "eu-north-1" ]; then region="eu-north-1"; ami="ami-0567220a328fe4fee"
+      elif [ "$OPTARG" == "ap-northeast-1" ]; then region="ap-northeast-1"; ami="ami-0d5db3e2a1b98ca94"
+      elif [ "$OPTARG" == "ap-northeast-2" ]; then region="ap-northeast-2"; ami="ami-0f4362c71ffaf7759"
+      elif [ "$OPTARG" == "ap-northeast-3" ]; then region="ap-northeast-3"; ami="ami-07672d9af3947230d"
+      elif [ "$OPTARG" == "ap-southeast-1" ]; then region="ap-southeast-1"; ami="ami-0c199cae95cea87f0"
+      elif [ "$OPTARG" == "ap-southeast-2" ]; then region="ap-southeast-2"; ami="ami-0c0483bc96aef8b2f"
+      elif [ "$OPTARG" == "sa-east-1" ]; then region="sa-east-1"; ami="ami-0065a65613972a22a"
+      elif [ "$OPTARG" == "ap-south-1" ]; then region="ap-south-1"; ami="ami-0237472cf337d9529"
+      elif [ "$OPTARG" == "ap-east-1" ]; then region="ap-east-1"; ami="ami-d26218a3"
+      elif [ "$OPTARG" == "ca-central-1" ]; then region="ca-central-1"; ami="ami-0dbe45195223e250b"
+      elif [ "$OPTARG" == "me-south-1" ]; then region="me-south-1"; ami="ami-0a7794ed517908686"
       else echo "Not a valid region"; bail 3; fi
       ;;
     p) vpn_port="$OPTARG" ;;
@@ -159,13 +160,12 @@ done
 
 if [[ -z "$instance_type" ]]; then 	instance_type="t2.micro"; fi
 if [[ $region =~ ^(eu-north-1|ap-east-1) ]]; then  instance_type="t3.micro"; fi
-if [[ -n "$custom_ami" ]]; then  ami="$custom_ami"; fi
 if [[ -n "$custom_user" ]]; then  user="$custom_user"; fi
 if [[ -n "$custom_DNS" ]]; then
   dcheck=$(filecheck openvpn-autoinstall.sh)
   [[ $dcheck == "0" ]]
-  sed -i '119,120d' ./scripts/openvpn-autoinstall.sh
-  sed -i "120i echo 'push \"dhcp-option DNS $custom_DNS\"' >> /etc/openvpn/server.conf" ./scripts/openvpn-autoinstall.sh
+  sed -i '99,100d' ./scripts/openvpn-autoinstall.sh
+  sed -i "100i echo 'push \"dhcp-option DNS $custom_DNS\"' >> /etc/openvpn/server.conf" ./scripts/openvpn-autoinstall.sh
 fi
 if [[ -z "$vpn_port"  ]]; then
   vpn_port="1194"
@@ -177,7 +177,7 @@ fi
 if [[ -n "$mflag" ]] ; then
   mcheck=$(filecheck openvpn-autoinstall.sh)
   [[ $mcheck == "0" ]]
-  sed -i "123i echo 'duplicate-cn' >> /etc/openvpn/server.conf" ./scripts/openvpn-autoinstall.sh
+  sed -i "112i echo 'duplicate-cn' >> /etc/openvpn/server.conf" ./scripts/openvpn-autoinstall.sh
 fi
 
 local_path="$(pwd)/${region}_aws_vpn.ovpn"
